@@ -1,10 +1,10 @@
 {
-  "name": "pwa-starter-kit",
-  "version": "0.9.0",
+  "name": "dm-helper",
+  "version": "0.1.0",
   "contributors": [
-    "The Polymer Authors"
+    "John Burchfield"
   ],
-  "license": "BSD-3-Clause",
+  "license": "MIT",
   "repository": "Polymer/pwa-starter-kit",
   "scripts": {
     "start": "polymer serve",
@@ -21,15 +21,21 @@
   },
   "dependencies": {
     "@polymer/app-layout": "^3.0.0",
+    "@polymer/iron-iconset-svg": "^3.0.1",
     "@polymer/lit-element": "^0.6.2",
+    "@polymer/paper-icon-button": "^3.0.1",
     "@polymer/polymer": "^3.0.0",
     "@webcomponents/webcomponentsjs": "^2.0.0",
     "pwa-helpers": "^0.9.0"
   },
   "devDependencies": {
     "axe-core": "^3.0.0",
+    "babel-eslint": "^10.0.1",
     "chai": "^4.1.2",
     "del": "^3.0.0",
+    "eslint": "^5.9.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.14.0",
     "gulp": "^4.0.0",
     "gulp-rename": "^1.3.0",
     "gulp-replace": "^1.0.0",

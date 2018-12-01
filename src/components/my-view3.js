@@ -9,7 +9,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 */
 
 import { html } from '@polymer/lit-element';
-import { PageViewElement } from './page-view-element.js';
+import { DmPageView } from './dm-page-view.js';
 
 // These are the elements needed by this element.
 import './shop-products.js';
@@ -20,7 +20,7 @@ import { SharedStyles } from './shared-styles.js';
 import { ButtonSharedStyles } from './button-shared-styles.js';
 import { addToCartIcon } from './my-icons.js';
 
-class MyView3 extends PageViewElement {
+class MyView3 extends DmPageView {
   render() {
     return html`
       ${SharedStyles}
@@ -82,20 +82,22 @@ class MyView3 extends PageViewElement {
     `;
   }
 
-  static get properties() { return {
+  static get properties() {
+    return {
     // This is the data from the store.
-    _cart: { type: Object },
-    _products: { type: Object },
-    _error: { type: String }
-  }}
+      _cart: { type: Object },
+      _products: { type: Object },
+      _error: { type: String },
+    };
+  }
 
   constructor() {
     super();
-    this._cart = {addedIds: [], quantityById: {}};
+    this._cart = { addedIds: [], quantityById: {} };
     this._error = '';
     this._products = this._getAllProducts();
-    this.addEventListener('addToCart', (e) => this._addToCart(e.detail.item));
-    this.addEventListener('removeFromCart', (e) => this._removeFromCart(e.detail.item));
+    this.addEventListener('addToCart', e => this._addToCart(e.detail.item));
+    this.addEventListener('removeFromCart', e => this._removeFromCart(e.detail.item));
   }
 
   checkout() {
@@ -106,7 +108,7 @@ class MyView3 extends PageViewElement {
       this._error = 'Checkout failed. Please try again';
     } else {
       this._error = '';
-      this._cart = {addedIds: [], quantityById: {}};
+      this._cart = { addedIds: [], quantityById: {} };
     }
   }
 
@@ -137,7 +139,7 @@ class MyView3 extends PageViewElement {
       this._cart.quantityById[productId] = 0;
       // This removes all items in this array equal to productId.
       this._cart.addedIds = this._cart.addedIds.filter(e => e !== productId);
-    } else{
+    } else {
       this._cart.quantityById[productId]--;
     }
 
@@ -148,7 +150,7 @@ class MyView3 extends PageViewElement {
 
   _numItemsInCart(cart) {
     let num = 0;
-    for (let id of cart.addedIds) {
+    for (const id of cart.addedIds) {
       num += cart.quantityById[id];
     }
     return num;
@@ -157,20 +159,30 @@ class MyView3 extends PageViewElement {
   _getAllProducts() {
     // Here you would normally get the data from the server.
     const PRODUCT_LIST = [
-      {"id": 1, "title": "Cabot Creamery Extra Sharp Cheddar Cheese", "price": 10.99, "inventory": 2},
-      {"id": 2, "title": "Cowgirl Creamery Mt. Tam Cheese", "price": 29.99, "inventory": 10},
-      {"id": 3, "title": "Tillamook Medium Cheddar Cheese", "price": 8.99, "inventory": 5},
-      {"id": 4, "title": "Point Reyes Bay Blue Cheese", "price": 24.99, "inventory": 7},
-      {"id": 5, "title": "Shepherd's Halloumi Cheese", "price": 11.99, "inventory": 3}
+      {
+        id: 1, title: 'Cabot Creamery Extra Sharp Cheddar Cheese', price: 10.99, inventory: 2,
+      },
+      {
+        id: 2, title: 'Cowgirl Creamery Mt. Tam Cheese', price: 29.99, inventory: 10,
+      },
+      {
+        id: 3, title: 'Tillamook Medium Cheddar Cheese', price: 8.99, inventory: 5,
+      },
+      {
+        id: 4, title: 'Point Reyes Bay Blue Cheese', price: 24.99, inventory: 7,
+      },
+      {
+        id: 5, title: "Shepherd's Halloumi Cheese", price: 11.99, inventory: 3,
+      },
     ];
 
     // You could reformat the data in the right format as well:
     const products = PRODUCT_LIST.reduce((obj, product) => {
-      obj[product.id] = product
-      return obj
+      obj[product.id] = product;
+      return obj;
     }, {});
     return products;
-  };
+  }
 }
 
 window.customElements.define('my-view3', MyView3);
