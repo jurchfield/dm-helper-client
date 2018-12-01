@@ -47,8 +47,7 @@ class DmApp extends LitElement {
       /* Workaround for IE11 displaying <main> as inline */
       main {
         display: block;
-        background: #f1f1f1;
-        padding: 5%;
+        padding: 3%;
       }
 
       .page {
@@ -95,9 +94,7 @@ class DmApp extends LitElement {
           <h2>Tools</h2>
         </app-toolbar>
         <section>
-          <a ?selected="${this._page === 'view1'}" href="/view1">View One</a>
-          <a ?selected="${this._page === 'view2'}" href="/view2">View Two</a>
-          <a ?selected="${this._page === 'view3'}" href="/view3">View Three</a>
+          <a ?selected="${this._page === 'spellSearch'}" href="/spellSearch">Spell Search</a>
         </section>
       </app-drawer>
       <app-header-layout>
@@ -108,6 +105,7 @@ class DmApp extends LitElement {
           </app-toolbar>
         </app-header>
         <main role="main">
+          <dm-spells-view class="page" ?active="${this._page === 'spellSearch'}"></dm-spells-view>
           <my-view1 class="page" ?active="${this._page === 'view1'}"></my-view1>
           <my-view2 class="page" ?active="${this._page === 'view2'}"></my-view2>
           <my-view3 class="page" ?active="${this._page === 'view3'}"></my-view3>
@@ -138,7 +136,6 @@ class DmApp extends LitElement {
   }
 
   firstUpdated() {
-    console.log(firebase);
     installRouter(this._locationChanged.bind(this));
     installOfflineWatcher(this._offlineChanged.bind(this));
   }
@@ -180,6 +177,7 @@ class DmApp extends LitElement {
       view2: () => import('./my-view2.js'),
       view3: () => import('./my-view3.js'),
       view4: () => import('./my-view4.js'),
+      spellSearch: () => import('./dm-spells-view.js'),
       def: () => import('./my-view404.js'),
     };
 

@@ -54,5 +54,19 @@
       "type": "script",
       "weight": 1
     }
+  },
+  "/spellSearch": {
+    "src/components/dm-app.js": {
+      "type": "script",
+      "weight": 1
+    },
+    "src/components/dm-spells-view.js": {
+      "type": "script",
+      "weight": 1
+    },
+    "node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js": {
+      "type": "script",
+      "weight": 1
+    }
   }
 }
