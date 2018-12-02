@@ -19,6 +19,13 @@ export class DmPageView extends LitElement {
   static get properties() {
     return {
       active: { type: Boolean },
+      _snackbarOpened: { type: Boolean },
     };
+  }
+
+  _openSnackbar() {
+    clearTimeout(this.__snackbarTimer);
+    this._snackbarOpened = true;
+    this.__snackbarTimer = setTimeout(() => { this._snackbarOpened = false; }, 3000);
   }
 }

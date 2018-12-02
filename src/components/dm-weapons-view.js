@@ -10,16 +10,7 @@ class DmWeaponsView extends DmPageView {
   render() {
     return html`
       ${SharedStyles}
-      <style>
-        :host {
-          display: block;
-          --lumo-primary-text-color: var(--app-primary-color);
-        }
-  
-        vaadin-combo-box {
-          width: 100%;
-        }
-
+      <style>  
         dm-weapon {
           padding-top: 1%;
         }
@@ -42,16 +33,15 @@ class DmWeaponsView extends DmPageView {
 
   constructor() {
     super();
-    this.baseUrl = 'http://www.dnd5eapi.co/api/equipment?type=weapon';
+    this._baseUrl = 'http://www.dnd5eapi.co/api/equipment?type=weapon';
     this._weaponsList = [];
   }
 
   firstUpdated() {
-    fetch(this.baseUrl)
+    fetch(this._baseUrl)
       .then(r => r.json())
       .then(({ results }) => {
         this._weaponsList = results.map(e => ({ label: e.name, value: e.url }));
-        this.requestUpdate();
       });
   }
 
@@ -64,7 +54,6 @@ class DmWeaponsView extends DmPageView {
       .then(r => r.json())
       .then((w) => {
         this._selectedWeapon = w;
-        this.requestUpdate();
       });
   }
 }

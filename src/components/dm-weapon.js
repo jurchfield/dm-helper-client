@@ -3,7 +3,7 @@ import { SharedStyles } from './shared-styles';
 
 import '@polymer/paper-card';
 
-class DmWeapon extends LitElement { 
+class DmWeapon extends LitElement {
   render() {
     return html`
       ${SharedStyles}

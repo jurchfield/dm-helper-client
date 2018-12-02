@@ -36,6 +36,7 @@ class DmApp extends LitElement {
         --app-drawer-selected-color: var(--app-primary-color);
 
         --app-header-font: 'TiamatRegular', serif;
+        --app-primary-font: Spectral, serif;
       }
 
       [main-title] {
@@ -109,8 +110,8 @@ class DmApp extends LitElement {
           
         </app-toolbar>
         <section>
-          <a ?selected="${this._page === 'spellSearch'}" href="/spellSearch">Spell Search</a>
-          <a ?selected="${this._page === 'weaponsSearch'}" href="/weaponsSearch">Weapon Search</a>
+          <a ?selected="${this._page === 'spell-search'}" href="/spell-search">Spell Search</a>
+          <a ?selected="${this._page === 'weapon-search'}" href="/weapon-search">Weapon Search</a>
         </section>
       </app-drawer>
       <app-header-layout>
@@ -124,8 +125,8 @@ class DmApp extends LitElement {
           </app-toolbar>
         </app-header>
         <main role="main">
-          <dm-spells-view class="page" ?active="${this._page === 'spellSearch'}"></dm-spells-view>
-          <dm-weapons-view class="page" ?active="${this._page === 'weaponsSearch'}"></dm-weapons-view>
+          <dm-spells-view class="page" ?active="${this._page === 'spell-search'}"></dm-spells-view>
+          <dm-weapons-view class="page" ?active="${this._page === 'weapon-search'}"></dm-weapons-view>
           <my-view404 class="page" ?active="${this._page === 'view404'}"></my-view404>
         </main>
       </app-header-layout>
@@ -183,15 +184,15 @@ class DmApp extends LitElement {
 
   _locationChanged() {
     const path = window.decodeURIComponent(window.location.pathname);
-    const page = path === '/' ? 'spellSearch' : path.slice(1);
+    const page = path === '/' ? 'spell-search' : path.slice(1);
 
     this._loadPage(page);
   }
 
   _loadPage(page) {
     const pages = {
-      spellSearch: () => import('./dm-spells-view.js'),
-      weaponsSearch: () => import('./dm-weapons-view.js'),
+      'spell-search': () => import('./dm-spells-view.js'),
+      'weapon-search': () => import('./dm-weapons-view.js'),
       def: () => import('./my-view404.js'),
     };
 

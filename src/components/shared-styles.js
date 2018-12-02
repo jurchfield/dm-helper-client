@@ -5,6 +5,8 @@ export const SharedStyles = html`
   :host {
     display: block;
     box-sizing: border-box;
+    --lumo-primary-text-color: var(--app-primary-color);
+    --lumo-font-family: var(--app-primary-font);
   }
 
   h1, h2, h3 {
@@ -30,6 +32,10 @@ export const SharedStyles = html`
 
   p {
     font-size: 14pt;
+  }
+
+  vaadin-combo-box {
+    width: 100%;
   }
 </style>
 `;

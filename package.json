@@ -5,16 +5,16 @@
     "John Burchfield"
   ],
   "license": "MIT",
-  "repository": "Polymer/pwa-starter-kit",
+  "repository": "jurchfield/dm-helper",
   "scripts": {
     "start": "polymer serve",
-    "build": "npm run build:prpl-server && npm run build:static",
+    "build": "polymer build",
     "build:prpl-server": "polymer build --auto-base-path && gulp prpl-server",
-    "build:static": "polymer build",
     "serve:prpl-server": "prpl-server --root server/build",
     "serve:static": "polymer serve --port 5000 build/es5-bundled",
     "test": "polymer test --module-resolution=node --npm",
-    "test:sauce": "polymer test --module-resolution=node --npm -s 'windows 10/microsoftedge@17' -s 'macos 10.13/safari@11'"
+    "test:sauce": "polymer test --module-resolution=node --npm -s 'windows 10/microsoftedge@17' -s 'macos 10.13/safari@11'",
+    "deploy": "firebase deploy"
   },
   "dependencies": {
     "@polymer/app-layout": "^3.0.0",
@@ -26,6 +26,7 @@
     "@polymer/paper-tabs": "^3.0.1",
     "@polymer/polymer": "^3.0.0",
     "@vaadin/vaadin-combo-box": "^4.2.0",
+    "@vaadin/vaadin-dialog": "^2.2.0",
     "@webcomponents/webcomponentsjs": "^2.0.0",
     "pwa-helpers": "^0.9.0"
   },
