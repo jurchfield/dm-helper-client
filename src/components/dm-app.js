@@ -21,7 +21,7 @@ class DmApp extends LitElement {
       :host {
         display: block;
 
-        --app-primary-color: rgb(23, 95, 124);
+        --app-primary-color: rgb(60, 120, 156);
         --app-secondary-color: #293237;
         --app-dark-text-color: var(--app-secondary-color);
         --app-light-text-color: white;
@@ -35,6 +35,8 @@ class DmApp extends LitElement {
         --app-drawer-background-color: var(--app-secondary-color);
         --app-drawer-text-color: var(--app-light-text-color);
         --app-drawer-selected-color: var(--app-primary-color);
+
+        --app-header-font: 'TiamatRegular', serif;
       }
 
       [main-title] {

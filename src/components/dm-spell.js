@@ -1,6 +1,7 @@
 import { LitElement, html } from '@polymer/lit-element';
 import { SharedStyles } from './shared-styles';
 
+import '@polymer/polymer/lib/elements/custom-style';
 import '@polymer/paper-card';
 import '@polymer/paper-tabs';
 
@@ -21,13 +22,23 @@ class DmSpell extends LitElement {
         
         h1, h2 {
           color: var(--app-dark-text-color);
-          font-family: 'TiamatRegular', serif;
+          font-family: var(--app-header-font);
           text-transform: uppercase;
           text-align: left;
         }
 
+        h1 {
+          padding-top: 0;
+        }
+
         paper-card {
           width: 100%;
+          --paper-card-header-text: {
+            background: green;
+          };
+          --paper-card-content: {
+            padding: 0;
+          }
         }
       </style>
       <paper-card>
@@ -35,8 +46,8 @@ class DmSpell extends LitElement {
           <h1>${this.spell.name}</h1>
           <h2>Description</h2>
           ${this.spell.desc.map(d => html`<p>${d.replace('â€™', "'")}</p>`)}
-          ${this.spell.higher_level ? html`<h3>Higher Level</h3> ${this.spell.higher_level.map(lev => html`<p>${lev}</p>`)}` : ''}
-          <h3>Attributes</h3>
+          ${this.spell.higher_level ? html`<h2>Higher Level</h2> ${this.spell.higher_level.map(lev => html`<p>${lev}</p>`)}` : ''}
+          <h2>Attributes</h2>
           <div class="attributes-table">
             <div class="attributes-table-row">
               <div>

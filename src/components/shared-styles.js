@@ -10,14 +10,7 @@ export const SharedStyles = html`
   h1, h2, h3 {
     color: var(--app-dark-text-color);
   }
-
-  @font-face {
-    font-family: 'TiamatRegular';
-    font-style: normal;
-    font-weight: normal;
-    src: local('TiamatRegular'), url('../../fonts/tiamatregular.otf') format('opentype');
-  }
-
+  
   .attributes-table {
     display: grid;
     width: 50%;

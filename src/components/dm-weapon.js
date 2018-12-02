@@ -14,7 +14,7 @@ class DmWeapon extends LitElement {
         
         h1, h2 {
           color: var(--app-dark-text-color);
-          font-family: 'TiamatRegular', serif;
+          font-family: var(--app-header-font);
           text-transform: uppercase;
           text-align: left;
         }
@@ -109,4 +109,4 @@ class DmWeapon extends LitElement {
   }
 }
 
-window.customElements.define('dm-weapon', DmWeapon)
+window.customElements.define('dm-weapon', DmWeapon);
