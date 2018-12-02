@@ -3,7 +3,6 @@ import { DmPageView } from './dm-page-view';
 import { SharedStyles } from './shared-styles';
 
 import '@vaadin/vaadin-combo-box/vaadin-combo-box';
-import '@polymer/paper-dialog';
 
 import './dm-spell';
 import './snack-bar';
