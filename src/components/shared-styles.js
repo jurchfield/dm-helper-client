@@ -1,13 +1,3 @@
-/**
-@license
-Copyright (c) 2018 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
-*/
-
 import { html } from '@polymer/lit-element';
 
 export const SharedStyles = html`
@@ -17,10 +7,36 @@ export const SharedStyles = html`
     box-sizing: border-box;
   }
 
-  h2 {
-    font-size: 24px;
-    text-align: center;
+  h1, h2, h3 {
     color: var(--app-dark-text-color);
+  }
+
+  @font-face {
+    font-family: 'TiamatRegular';
+    font-style: normal;
+    font-weight: normal;
+    src: local('TiamatRegular'), url('../../fonts/tiamatregular.otf') format('opentype');
+  }
+
+  .attributes-table {
+    display: grid;
+    width: 50%;
+  }
+
+  .attributes-table-row {
+    display: grid;
+    grid-template-columns: 30% 70%;
+    border: 1px solid lightgray;
+    padding: 1%;
+    font-size: 14pt;
+  }
+
+  .attributes-table-row:nth-of-type(odd) {
+    background: var(--app-section-even-color);
+  }
+
+  p {
+    font-size: 14pt;
   }
 </style>
 `;

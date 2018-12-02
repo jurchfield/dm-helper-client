@@ -2,7 +2,8 @@
   "entrypoint": "index.html",
   "shell": "src/components/dm-app.js",
   "sources": [
-    "images/**/*"
+    "images/**/*",
+    "fonts/**/*"
   ],
   "extraDependencies": [
     "manifest.json",

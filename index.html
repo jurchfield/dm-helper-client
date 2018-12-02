@@ -12,7 +12,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>DM Helper</title>
+    <title>Dungeon Master Tool Box</title>
     <meta name="generator" content="PWA Starter Kit">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="DM Helper is to help DMs!">
@@ -51,6 +51,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <link rel="apple-touch-icon" sizes="144x144" href="images/manifest/icon-144x144.png">
     <link rel="apple-touch-icon" sizes="192x192" href="images/manifest/icon-192x192.png">
 
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=MedievalSharp" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Spectral" rel="stylesheet">
+
     <!-- Tile icon for Windows 8 (144x144 + tile color) -->
     <meta name="msapplication-TileImage" content="images/manifest/icon-144x144.png">
     <meta name="msapplication-TileColor" content="#3f51b5">
@@ -80,6 +84,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       window.process = { env: { NODE_ENV: 'production' } };
     </script>
 
+    <!-- Add Firebase -->
+    
     <script src="https://www.gstatic.com/firebasejs/5.6.0/firebase.js"></script>
     <script>
       // Initialize Firebase
@@ -88,7 +94,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         authDomain: "dm-helper-1f262.firebaseapp.com",
         databaseURL: "https://dm-helper-1f262.firebaseio.com",
         projectId: "dm-helper-1f262",
-        storageBucket: "",
+        storageBucket: "dm-helper-1f262.appspot.com",
         messagingSenderId: "342291879827"
       };
       firebase.initializeApp(config);
@@ -107,10 +113,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         */
         font-display: swap;
       }
+
+      @font-face {
+        font-family: 'TiamatRegular';
+        font-style: normal;
+        font-weight: normal;
+        src: local('TiamatRegular'), url('./fonts/tiamatregular.otf') format('opentype');
+      }
+
       body {
         margin: 0;
         /* This is a font-stack that tries to use the system-default sans-serifs first */
-        font-family: Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+        font-family: Spectral,Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
         line-height: 1.5;
         min-height: 100vh;
         background: #f1f1f1;
@@ -119,7 +133,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </style>
   </head>
   <body>
-    <dm-app appTitle="DM Helper"></dm-app>
+    <dm-app appTitle="Dungeon Master Tool Box"></dm-app>
     <noscript>
       Please enable JavaScript to view this website.
     </noscript>

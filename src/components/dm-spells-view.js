@@ -1,6 +1,8 @@
 import { html } from '@polymer/lit-element';
 import { DmPageView } from './dm-page-view';
 import { SharedStyles } from './shared-styles';
+
+import './dm-spell';
 import '@vaadin/vaadin-combo-box/vaadin-combo-box';
 
 class DmSpellsView extends DmPageView {
@@ -8,6 +10,7 @@ class DmSpellsView extends DmPageView {
     super();
     this.baseUrl = 'http://www.dnd5eapi.co/api/spells';
     this.spellList = [];
+    this.selectedSpell = undefined;
   }
 
   firstUpdated() {
@@ -22,28 +25,44 @@ class DmSpellsView extends DmPageView {
   render() {
     return html`
       ${SharedStyles}
+      <style>
+        :host {
+          display: block;
+          --lumo-primary-text-color: var(--app-primary-color);
+        }
+        
+        vaadin-combo-box {
+          width: 100%;
+        }
+
+        dm-spell {
+          padding-top: 1%;
+        }
+      </style>
       <section>
         <vaadin-combo-box 
           label="Search for a spell"
           @selected-item-changed="${this._inputChanged.bind(this)}"
           .items="${this.spellList}">
         </vaadin-combo-box>
-
-        <div>
-          ${this.spellList.map(({ name }) => html`<p>${name}</p>`)}
-        </div>
+        ${this.selectedSpell ? this._generateSpellCard() : ''}
       </section>
     `;
   }
 
+  _generateSpellCard() {
+    return html`
+      <dm-spell .spell="${this.selectedSpell}"></dm-spell>
+    `;
+  }
+
   _inputChanged({ target: { value } }) {
-    console.log(value);
-    // fetch(`${this.baseUrl}?name=${value.replace(/ /g,'+')}`)
-    //   .then(r => r.json())
-    //   .then(({ results }) => {
-    //     this.spellList = results;
-    //     this.update();
-    //   });
+    fetch(value)
+      .then(r => r.json())
+      .then((s) => {
+        this.selectedSpell = s;
+        this.update();
+      });
   }
 }
 
