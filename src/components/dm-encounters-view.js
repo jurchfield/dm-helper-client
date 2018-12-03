@@ -63,7 +63,8 @@ class DmEncountersView extends DmPageView {
         [participant-card-heading] {
           font-size: 14pt;
           display: grid;
-          grid-template-columns: repeat(3, auto);
+          grid-template-columns: 50% repeat(2, 25%);
+          justify-items: stretch;
         }
 
         [participant-card-actions] {
@@ -73,6 +74,10 @@ class DmEncountersView extends DmPageView {
         }
 
         [participant-card-close-button] {
+          text-align: right;
+        }
+
+        [participant-icon] {
           text-align: right;
         }
       </style>
@@ -151,8 +156,8 @@ class DmEncountersView extends DmPageView {
         @click="${this._selectParticipant.bind(p)}">
           <div participant-card-heading>
             <span>${p.name}</span>
-            <span><iron-icon icon="favorite"></iron-icon>&nbsp;${p.hit_points}/${p.hit_points_max}</span>
-            <span><iron-icon icon="vaadin:shield"></iron-icon>&nbsp;${p.armor_class}</span>
+            <span participant-icon><iron-icon icon="favorite"></iron-icon>&nbsp;${p.hit_points}/${p.hit_points_max}</span>
+            <span participant-icon><iron-icon icon="vaadin:shield"></iron-icon>&nbsp;${p.armor_class}</span>
           </div>
         </div>
         <div class="card-actions">
