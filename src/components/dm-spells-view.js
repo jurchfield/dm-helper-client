@@ -45,15 +45,15 @@ class DmSpellsView extends DmPageView {
 
   constructor() {
     super();
-    this._baseUrl = 'http://www.dnd5eapi.co/api/spells';
+    this._baseUrl = 'https://us-central1-dm-helper-1f262.cloudfunctions.net/spells';
     this._spellList = [];
   }
 
   firstUpdated() {
     fetch(this._baseUrl)
       .then(r => r.json())
-      .then(({ results }) => {
-        this._spellList = results.map(s => ({ label: s.name, value: s.url }));
+      .then((spells) => {
+        this._spellList = spells;
       })
       .catch((err) => {
         console.error(err);

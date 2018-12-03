@@ -33,15 +33,15 @@ class DmWeaponsView extends DmPageView {
 
   constructor() {
     super();
-    this._baseUrl = 'http://www.dnd5eapi.co/api/equipment?type=weapon';
+    this._baseUrl = 'https://us-central1-dm-helper-1f262.cloudfunctions.net/weapons';
     this._weaponsList = [];
   }
 
   firstUpdated() {
     fetch(this._baseUrl)
       .then(r => r.json())
-      .then(({ results }) => {
-        this._weaponsList = results.map(e => ({ label: e.name, value: e.url }));
+      .then((weapons) => {
+        this._weaponsList = weapons;
       });
   }
 

@@ -3,9 +3,11 @@ import { DmPageView } from './dm-page-view';
 import { SharedStyles } from './shared-styles';
 
 import '@vaadin/vaadin-combo-box';
+import '@vaadin/vaadin-dialog';
 import '@polymer/paper-card';
 import '@polymer/paper-button';
 import '@polymer/iron-icons';
+import '@vaadin/vaadin-icons/vaadin-icons';
 import '@polymer/iron-icon';
 import '@polymer/paper-icon-button';
 
@@ -59,10 +61,9 @@ class DmEncountersView extends DmPageView {
         }
 
         [participant-card-heading] {
-          font-family: var(--app-header-font);
-          font-size: 16pt;
+          font-size: 14pt;
           display: grid;
-          grid-template-columns: repeat(4, auto);
+          grid-template-columns: repeat(3, auto);
         }
 
         [participant-card-actions] {
@@ -88,7 +89,7 @@ class DmEncountersView extends DmPageView {
               <vaadin-combo-box 
                 label="Add Player"
                 .items="${this._players}"
-                @selected-item-changed="${this._participantInputChanged.bind(this)}">
+                @selected-item-changed="${this._playerInputChanged.bind(this)}">
               </vaadin-combo-box>
               <paper-button save-button raised class="indigo">Save</paper-button>
             </div>
@@ -111,6 +112,8 @@ class DmEncountersView extends DmPageView {
           </dm-card>
         </div>
       </div>
+
+      <vaadin-dialog id="add-player-dialog" aria-label="simple"></vaadin-dialog>
     `;
   }
 
@@ -128,7 +131,7 @@ class DmEncountersView extends DmPageView {
     vm = this;
     this._baseUrl = 'https://us-central1-dm-helper-1f262.cloudfunctions.net';
     this._participants = [];
-    this._players = [];
+    this._players = [{ label: 'Add New Player', value: 'add' }];
   }
 
   firstUpdated() {
@@ -149,6 +152,7 @@ class DmEncountersView extends DmPageView {
           <div participant-card-heading>
             <span>${p.name}</span>
             <span><iron-icon icon="favorite"></iron-icon>&nbsp;${p.hit_points}/${p.hit_points_max}</span>
+            <span><iron-icon icon="vaadin:shield"></iron-icon>&nbsp;${p.armor_class}</span>
           </div>
         </div>
         <div class="card-actions">
@@ -184,6 +188,12 @@ class DmEncountersView extends DmPageView {
 
     this._participants.push(participant);
     this.requestUpdate();
+  }
+
+  _playerInputChanged({ target: { value } }) {
+    if (value === 'add') {
+      this.shadowRoot.querySelector('#add-player-dialog').opened = true;
+    }
   }
 
   _removeParticipant({ path }) {
