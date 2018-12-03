@@ -42,9 +42,8 @@ class DmApp extends LitElement {
 
       [main-title] {
         font-family: 'TiamatRegular';
-        text-transform: uppercase;
         color: var(--app-light-text-color);
-        font-size: 26pt;
+        font-size: 24pt;
       }
 
       [logo] {
@@ -57,7 +56,6 @@ class DmApp extends LitElement {
 
       [toolbar-heading] {
         font-family: 'TiamatRegular';
-        text-transform: uppercase;
         color: var(--app-dark-text-color);
       }
 
