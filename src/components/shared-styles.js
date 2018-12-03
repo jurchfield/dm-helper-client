@@ -31,7 +31,7 @@ export const SharedStyles = html`
   }
 
   p {
-    font-size: 14pt;
+    font-size: 12pt;
   }
 
   vaadin-combo-box {

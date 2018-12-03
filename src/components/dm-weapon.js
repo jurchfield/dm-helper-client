@@ -1,7 +1,7 @@
 import { html, LitElement } from '@polymer/lit-element';
 import { SharedStyles } from './shared-styles';
 
-import '@polymer/paper-card';
+import './dm-card';
 
 class DmWeapon extends LitElement {
   render() {
@@ -15,17 +15,14 @@ class DmWeapon extends LitElement {
         h1, h2 {
           color: var(--app-dark-text-color);
           font-family: var(--app-header-font);
-          text-transform: uppercase;
           text-align: left;
         }
-
-        paper-card {
-          width: 100%;
-        }
       </style>
-      <paper-card>
-        <div class="card-content">
-          <h1>${this.weapon.name}</h1>
+      <dm-card>
+        <div slot="header">
+          ${this.weapon.name}
+        </div>
+        <div slot="content">
           <h2>Attributes</h2>
           <div class="attributes-table">
             <div class="attributes-table-row">
@@ -72,7 +69,7 @@ class DmWeapon extends LitElement {
             ${this.weapon.throw_range ? this._generateThrowRange() : ''}
           </div>
         </div>
-      </paper-card>
+      </dm-card>
     `;
   }
 

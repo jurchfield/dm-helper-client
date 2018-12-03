@@ -20,6 +20,7 @@ class DmApp extends LitElement {
     <style>
       :host {
         display: block;
+        --app-drawer-width: 12%;
 
         --app-primary-color: rgb(60, 120, 156);
         --app-secondary-color: #293237;
@@ -110,6 +111,7 @@ class DmApp extends LitElement {
           
         </app-toolbar>
         <section>
+          <a ?selected="${this._page === 'start-encounter'}" href="/start-encounter">Start Encounter</a>
           <a ?selected="${this._page === 'spell-search'}" href="/spell-search">Spell Search</a>
           <a ?selected="${this._page === 'weapon-search'}" href="/weapon-search">Weapon Search</a>
         </section>
@@ -125,6 +127,7 @@ class DmApp extends LitElement {
           </app-toolbar>
         </app-header>
         <main role="main">
+          <dm-encounters-view class="page" ?active="${this._page === 'start-encounter'}"></dm-encounters-view>
           <dm-spells-view class="page" ?active="${this._page === 'spell-search'}"></dm-spells-view>
           <dm-weapons-view class="page" ?active="${this._page === 'weapon-search'}"></dm-weapons-view>
           <my-view404 class="page" ?active="${this._page === 'view404'}"></my-view404>
@@ -193,7 +196,7 @@ class DmApp extends LitElement {
     const pages = {
       'spell-search': () => import('./dm-spells-view.js'),
       'weapon-search': () => import('./dm-weapons-view.js'),
-      def: () => import('./my-view404.js'),
+      'start-encounter': () => import('./dm-encounters-view.js'),
     };
 
     (pages[page] || pages.def)();

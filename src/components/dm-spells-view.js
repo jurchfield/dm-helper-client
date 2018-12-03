@@ -15,7 +15,6 @@ class DmSpellsView extends DmPageView {
       dm-spell {
         padding-top: 1%;
       }
-      
       paper-dialog {
         position: fixed;
         top: 16px;
@@ -25,12 +24,6 @@ class DmSpellsView extends DmPageView {
         overflow: auto;
       }
       </style>
-      <paper-dialog id="modal" modal>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-        <div class="buttons">
-          <paper-button dialog-confirm autofocus>Tap me to close</paper-button>
-        </div>
-      </paper-dialog>
       <vaadin-combo-box 
         label="Search for a spell"
         @selected-item-changed="${this._inputChanged.bind(this)}"
@@ -57,7 +50,6 @@ class DmSpellsView extends DmPageView {
   }
 
   firstUpdated() {
-    console.log(document.querySelector('#dialog'));
     fetch(this._baseUrl)
       .then(r => r.json())
       .then(({ results }) => {
@@ -76,7 +68,6 @@ class DmSpellsView extends DmPageView {
   }
 
   _inputChanged({ target: { value } }) {
-    this.shadowRoot.querySelector('#modal').toggle();
     fetch(value)
       .then(r => r.json())
       .then((s) => {
