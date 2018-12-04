@@ -20,7 +20,7 @@ class DmApp extends LitElement {
     <style>
       :host {
         display: block;
-        --app-drawer-width: 12%;
+        --app-drawer-width: 15%;
 
         --app-primary-color: rgb(60, 120, 156);
         --app-secondary-color: #293237;
@@ -185,7 +185,7 @@ class DmApp extends LitElement {
 
   _locationChanged() {
     const path = window.decodeURIComponent(window.location.pathname);
-    const page = path === '/' ? 'spell-search' : path.slice(1);
+    const page = path === '/' ? 'start-encounter' : path.slice(1);
 
     this._loadPage(page);
   }
