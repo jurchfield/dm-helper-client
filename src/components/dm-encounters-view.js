@@ -15,6 +15,8 @@ import './dm-card';
 import './dm-participant';
 
 let vm;
+let dragSrcEl = null;
+let cards;
 
 class Participant {
   constructor(p) {
@@ -75,6 +77,17 @@ class DmEncountersView extends DmPageView {
         [participant-card-close-button] {
           text-align: right;
         }
+
+        [draggable] {
+          -moz-user-select: none;
+          -khtml-user-select: none;
+          -webkit-user-select: none;
+          user-select: none;
+          /* Required to make elements draggable in old WebKit */
+          -khtml-user-drag: element;
+          -webkit-user-drag: element;
+        }
+
       </style>
       <div id="container">
         <div id="add-characters">
@@ -143,9 +156,47 @@ class DmEncountersView extends DmPageView {
       .catch(err => console.error(err));
   }
 
+  _handleDragStart(e) {
+    dragSrcEl = e.target;
+
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/html', e.target.innerHTML);
+  }
+
+  _handleDragOver(e) {
+    if (e.preventDefault) {
+      e.preventDefault();
+    }
+
+    e.dataTransfer.dropEffect = 'move';
+
+    return false;
+  }
+
+  _handleDrop(e) {
+    if (e.stopPropagation) {
+      e.stopPropagation();
+    }
+
+    const target = vm.shadowRoot.getElementById(this.id);
+
+    if (dragSrcEl != target) {
+      dragSrcEl.innerHTML = target.innerHTML;
+      target.innerHTML = e.dataTransfer.getData('text/html');
+    }
+
+    return false;
+  }
+
   _getParticipantCard(p) {
     return html`
-      <paper-card participant-card>
+      <paper-card 
+        id="${p.id}"
+        @dragstart="${this._handleDragStart}"
+        @dragover="${this._handleDragOver}"
+        @drop="${this._handleDrop.bind(p)}"
+        participant-card 
+        draggable>
         <div
         class="card-content"
         @click="${this._selectParticipant.bind(p)}">
@@ -218,4 +269,3 @@ class DmEncountersView extends DmPageView {
 }
 
 window.customElements.define('dm-encounters-view', DmEncountersView);
-
