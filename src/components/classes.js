@@ -1,6 +1,17 @@
+/* eslint-disable no-bitwise */
+
+function _guidGenerator() {
+  const S4 = () => (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+  return (`${S4()}${S4()}-${S4()}-${S4()}-${S4()}-${S4()}${S4()}${S4()}`);
+}
+
+function _roll(die, mod) {
+  return Math.round(Math.random() * (die - 1) + 1 + mod);
+}
+
 export class Participant {
   constructor(p) {
-    Object.assign(this, { ...p, id: this._guidGenerator(), hit_points_max: p.hit_points });
+    Object.assign(this, { ...p, id: _guidGenerator(), hit_points_max: p.hit_points });
   }
 
   damage(amt) {
@@ -15,9 +26,17 @@ export class Participant {
 
     this.hit_points += amt;
   }
+}
 
-  _guidGenerator() {
-    const S4 = () => (((1+Math.random())*0x10000)|0).toString(16).substring(1);
-    return (`${S4()}${S4()}-${S4()}-${S4()}-${S4()}-${S4()}${S4()}${S4()}`);
+export class Encounter {
+  constructor(config) {
+    Object.assign(this, { ...config, id: _guidGenerator() });
+  }
+
+  rollInitiative() {
+    this.participants = this.participants.map(p => ({
+      ...p,
+      initiative_roll: _roll(20, p.dexterity_modifier),
+    }));
   }
 }

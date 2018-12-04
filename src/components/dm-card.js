@@ -31,6 +31,12 @@ class DmCard extends LitElement {
         [content] {
           padding: 3%;
         }
+
+        [actions] {
+          padding: 1.5% repeat(3, 3%);
+          margin-top: 1%;
+          border-top: 1px solid #e8e8e8;
+        }
       </style>
       <paper-card>
         <h1 header>
@@ -38,6 +44,9 @@ class DmCard extends LitElement {
         </h1>
         <div content>
           <slot name="content"></slot>
+        </div>
+        <div actions>
+          <slot name="actions"></slot>
         </div>
       </paper-card>
     `;

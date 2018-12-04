@@ -80,12 +80,12 @@ class DmInitiative extends LitElement {
         <div class="card-actions">
           <div participant-card-actions>
             <paper-icon-button
-              icon="add-circle-outline"
+              icon="add"
               title="Heal"
               @click="${this._healParticipant.bind(p)}">
             </paper-icon-button>
             <paper-icon-button 
-              icon="remove-circle-outline"
+              icon="remove"
               title="Damage"
               @click="${this._damageParticipant.bind(p)}">
             </paper-icon-button>

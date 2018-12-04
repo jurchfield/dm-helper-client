@@ -45,6 +45,12 @@ class DmParticpant extends LitElement {
         <div feature>${this.participant.intelligence}</div>
         <div feature>${this.participant.wisdom}</div>
         <div feature>${this.participant.charisma}</div>
+        <div feature>+${this.participant.strength_modifier}</div>
+        <div feature>+${this.participant.dexterity_modifier}</div>
+        <div feature>+${this.participant.constitution_modifier}</div>
+        <div feature>+${this.participant.intelligence_modifier}</div>
+        <div feature>+${this.participant.wisdom_modifier}</div>
+        <div feature>+${this.participant.charisma_modifier}</div>
       </div>
       <hr>
       <p><b>Saves:</b> Dex+${this.participant.dexterity_save || '0'} Con+${this.participant.constitution_save || '0'} Wis+${this.participant.wisdom_save || '0'}  Cha+${this.participant.charisma_save || '0'}</p>

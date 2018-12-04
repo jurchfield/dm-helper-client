@@ -1,12 +1,17 @@
 import { html } from '@polymer/lit-element';
 import { DmPageView } from './dm-page-view';
 import { SharedStyles } from './shared-styles';
-import { Participant } from './classes';
+import {
+  Participant,
+  Encounter,
+} from './classes';
 
 import '@vaadin/vaadin-combo-box';
 import '@vaadin/vaadin-dialog';
 import '@polymer/paper-card';
 import '@polymer/paper-button';
+import '@polymer/paper-icon-button';
+import '@polymer/iron-icons/av-icons';
 
 import './dm-card';
 import './dm-participant';
@@ -23,8 +28,14 @@ class DmEncountersView extends DmPageView {
           grid-column-gap: 1%;
         }
 
-        [save-button] {
-          width: 100%;
+        [actions] {
+          display: grid;
+          grid-template-columns: repeat(3, auto);
+          grid-column-gap: 1%;
+          justify-items: center
+        }
+
+        [button] {
           margin-top: 5%;
         }
       </style>
@@ -43,7 +54,34 @@ class DmEncountersView extends DmPageView {
                 .items="${this._players}"
                 @selected-item-changed="${this._playerInputChanged.bind(this)}">
               </vaadin-combo-box>
-              <paper-button save-button raised class="indigo">Save</paper-button>
+            </div>
+            <div slot="actions">
+              <div actions>
+                <paper-icon-button
+                  button
+                  raised
+                  icon="av:play-arrow"
+                  title="Start Encounter"
+                  @click="${this._startEncounter.bind(this)}">
+                  Start
+                </paper-icon-button>
+                <paper-icon-button
+                  button
+                  raised
+                  icon="av:stop"
+                  title="Stop Encounter"
+                  @click="${this._startEncounter.bind(this)}">
+                  Start
+                </paper-icon-button>
+                <paper-icon-button
+                  button
+                  raised
+                  icon="save"
+                  title="Save Encounter"
+                  @click="${this._startEncounter.bind(this)}">
+                  Start
+                </paper-icon-button>
+              </div>
             </div>
           </dm-card>
         </div>
@@ -76,6 +114,7 @@ class DmEncountersView extends DmPageView {
       _participants: { type: Array },
       _players: { type: Array },
       _selectedParticipant: { type: Object },
+      _encounter: { type: Object },
     };
   }
 
@@ -124,6 +163,15 @@ class DmEncountersView extends DmPageView {
 
   _select({ detail: p }) {
     this._selectedParticipant = p;
+  }
+
+  _startEncounter() {
+    this._encounter = new Encounter({ participants: this._participants });
+    console.log(this._encounter);
+
+    this._encounter.rollInitiative();
+
+    console.log(this._encounter);
   }
 }
 
