@@ -1,11 +1,11 @@
 import { LitElement, html } from '@polymer/lit-element';
 import { SharedStyles } from './shared-styles';
 
-import '@polymer/paper-card';
 import '@polymer/iron-icons';
 import '@vaadin/vaadin-icons/vaadin-icons';
 import '@polymer/iron-icon';
 import '@polymer/paper-icon-button';
+import '@polymer/paper-input/paper-input';
 
 import './dm-card';
 
@@ -32,6 +32,7 @@ class DmInitiative extends LitElement {
         width: 100%;
         display: grid;
         grid-template-columns: 10% 10% 80%;
+        align-items: center;
       }
 
       [participant-card-close-button] {
@@ -40,6 +41,11 @@ class DmInitiative extends LitElement {
 
       [participant-icon] {
         text-align: right;
+      }
+
+      [initiative-input] {
+        width: 10%;
+        margin-left: 85%;
       }
     </style>
     <dm-card>
@@ -62,14 +68,15 @@ class DmInitiative extends LitElement {
         type: Array,
         notify: true,
       },
+      state: { type: String },
     };
   }
 
   _getParticipantCard(p) {
     return html`
-      <paper-card participant-card>
+      <dm-card participant-card>
         <div
-        class="card-content"
+        slot="content"
         @click="${this._selectParticipant.bind(p)}">
           <div participant-card-heading>
             <span>${p.name}</span>
@@ -77,7 +84,7 @@ class DmInitiative extends LitElement {
             <span participant-icon><iron-icon icon="vaadin:shield"></iron-icon>&nbsp;${p.armor_class}</span>
           </div>
         </div>
-        <div class="card-actions">
+        <div slot="actions">
           <div participant-card-actions>
             <paper-icon-button
               icon="add"
@@ -90,16 +97,37 @@ class DmInitiative extends LitElement {
               @click="${this._damageParticipant.bind(p)}">
             </paper-icon-button>
             <div participant-card-close-button>
-              <paper-icon-button
-                id="${p.id}" 
-                @click="${this._removeParticipant.bind(p)}"
-                icon="clear"
-                title="Remove">
-              </paper-icon-button>
+              ${this.state === 'initiativeRolled' ? this._getInitiativeInput(p) : this._getDeleteButton(p)}
             </div>
           </div>
         </div>
-      </paper-card>
+      </dm-card>
+    `;
+  }
+
+  _getInitiativeInput(p) {
+    return html`
+      <paper-input
+        prevent-invalid-input
+        allowed-pattern="[0-9]"
+        initiative-input
+        always-float-label
+        maxlength="2"
+        label="Roll"
+        value="${p.initiative_roll}"
+        @change="${this._initiativeChanged.bind(p)}">
+      </paper-input>
+    `;
+  }
+
+  _getDeleteButton(p) {
+    return html`
+      <paper-icon-button
+        id="${p.id}" 
+        @click="${this._removeParticipant.bind(p)}"
+        icon="clear"
+        title="Remove">
+      </paper-icon-button>
     `;
   }
 
@@ -122,6 +150,11 @@ class DmInitiative extends LitElement {
   _removeParticipant() {
     vm.participants = vm.participants.filter(p => p.id !== this.id);
     vm.dispatchEvent(new CustomEvent('removed', { detail: vm.participants }));
+  }
+
+  _initiativeChanged({ target: { value } }) {
+    this.initiative_roll = value;
+    vm.dispatchEvent(new CustomEvent('initiative-changed', { detail: vm.participants }));
   }
 }
 

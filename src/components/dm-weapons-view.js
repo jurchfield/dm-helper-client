@@ -41,7 +41,7 @@ class DmWeaponsView extends DmPageView {
     fetch(this._baseUrl)
       .then(r => r.json())
       .then((weapons) => {
-        this._weaponsList = weapons;
+        this._weaponsList = weapons.map(w => ({ label: w.name, value: w }));
       });
   }
 
@@ -50,11 +50,7 @@ class DmWeaponsView extends DmPageView {
   }
 
   _inputChanged({ target: { value } }) {
-    fetch(value)
-      .then(r => r.json())
-      .then((w) => {
-        this._selectedWeapon = w;
-      });
+    this._selectedWeapon = value;
   }
 }
 

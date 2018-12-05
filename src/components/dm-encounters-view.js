@@ -70,7 +70,7 @@ class DmEncountersView extends DmPageView {
                   raised
                   icon="av:stop"
                   title="Stop Encounter"
-                  @click="${this._startEncounter.bind(this)}">
+                  @click="${this._stopEncounter.bind(this)}">
                   Start
                 </paper-icon-button>
                 <paper-icon-button
@@ -88,10 +88,12 @@ class DmEncountersView extends DmPageView {
         <div id="initiative">
           <dm-initiative
             .participants="${this._participants}"
+            .state="${this.state}"
             @selected="${this._select.bind(this)}"
-            @damaged="${this._damage.bind(this)}"
-            @healed="${this._heal.bind(this)}"
-            @removed="${this._remove.bind(this)}">
+            @damaged="${this._updateParticipants.bind(this)}"
+            @healed="${this._updateParticipants.bind(this)}"
+            @initiative-changed="${this._updateParticipants.bind(this)}"
+            @removed="${this._updateParticipants.bind(this)}">
           </dm-initiative>
         </div>
         <div id="selected-participant">
@@ -110,6 +112,7 @@ class DmEncountersView extends DmPageView {
 
   static get properties() {
     return {
+      state: { type: String },
       _creatures: { type: Array },
       _participants: { type: Array },
       _players: { type: Array },
@@ -149,15 +152,7 @@ class DmEncountersView extends DmPageView {
     }
   }
 
-  _remove({ detail: p }) {
-    this._participants = p;
-  }
-
-  _damage({ detail: p }) {
-    this._participants = p;
-  }
-
-  _heal({ detail: p }) {
+  _updateParticipants({ detail: p }) {
     this._participants = p;
   }
 
@@ -167,11 +162,16 @@ class DmEncountersView extends DmPageView {
 
   _startEncounter() {
     this._encounter = new Encounter({ participants: this._participants });
-    console.log(this._encounter);
 
     this._encounter.rollInitiative();
+    this._participants = this._encounter.participants;
 
-    console.log(this._encounter);
+    this.state = 'initiativeRolled';
+  }
+
+  _stopEncounter() {
+    this.state = 'idle';
+    this._participants = [];
   }
 }
 

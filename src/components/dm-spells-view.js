@@ -53,7 +53,7 @@ class DmSpellsView extends DmPageView {
     fetch(this._baseUrl)
       .then(r => r.json())
       .then((spells) => {
-        this._spellList = spells;
+        this._spellList = spells.map(s => ({ label: s.name, value: s }));
       })
       .catch((err) => {
         console.error(err);
@@ -68,15 +68,7 @@ class DmSpellsView extends DmPageView {
   }
 
   _inputChanged({ target: { value } }) {
-    fetch(value)
-      .then(r => r.json())
-      .then((s) => {
-        this._selectedSpell = s;
-      })
-      .catch((err) => {
-        console.error(err);
-        this._openSnackbar();
-      });
+    this._selectedSpell = value;
   }
 }
 

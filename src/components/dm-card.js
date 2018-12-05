@@ -30,6 +30,7 @@ class DmCard extends LitElement {
 
         [content] {
           padding: 3%;
+          font-family: var(--app-primary-font);
         }
 
         [actions] {

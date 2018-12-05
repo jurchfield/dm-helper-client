@@ -20,7 +20,7 @@ export const SharedStyles = html`
 
   .attributes-table-row {
     display: grid;
-    grid-template-columns: 30% 70%;
+    grid-template-columns: repeat(2, 50%);
     border: 1px solid lightgray;
     padding: 1%;
     font-size: 14pt;
@@ -36,6 +36,12 @@ export const SharedStyles = html`
 
   vaadin-combo-box {
     width: 100%;
+  }
+
+  @media only screen and (max-width: 640px) {
+    .attributes-table {
+      width: 100%;
+    }
   }
 </style>
 `;
