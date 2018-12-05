@@ -6,8 +6,10 @@ import '@vaadin/vaadin-icons/vaadin-icons';
 import '@polymer/iron-icon';
 import '@polymer/paper-icon-button';
 import '@polymer/paper-input/paper-input';
+import '@polymer/iron-collapse';
 
 import './dm-card';
+import './dm-participant';
 
 let vm;
 
@@ -47,6 +49,11 @@ class DmInitiative extends LitElement {
         width: 10%;
         margin-left: 85%;
       }
+
+      [participant-name] {
+        font-family: var(--app-header-font);
+        font-size: 18pt;
+      }
     </style>
     <dm-card>
       <div slot="header">Initiative Order</div>
@@ -69,6 +76,7 @@ class DmInitiative extends LitElement {
         notify: true,
       },
       state: { type: String },
+      _selectedParticipant: { type: Object },
     };
   }
 
@@ -79,10 +87,14 @@ class DmInitiative extends LitElement {
         slot="content"
         @click="${this._selectParticipant.bind(p)}">
           <div participant-card-heading>
-            <span>${p.name}</span>
+            <div participant-name>${p.name}</div>
             <span participant-icon><iron-icon icon="favorite"></iron-icon>&nbsp;${p.hit_points}/${p.hit_points_max}</span>
             <span participant-icon><iron-icon icon="vaadin:shield"></iron-icon>&nbsp;${p.armor_class}</span>
           </div>
+
+          <iron-collapse id="${p.id}">
+            <dm-participant .participant="${p}"></dm-participant>
+          </iron-collapse>
         </div>
         <div slot="actions">
           <div participant-card-actions>
@@ -132,6 +144,7 @@ class DmInitiative extends LitElement {
   }
 
   _selectParticipant() {
+    vm.shadowRoot.getElementById(this.id).toggle();
     vm.dispatchEvent(new CustomEvent('selected', { detail: this }));
   }
 

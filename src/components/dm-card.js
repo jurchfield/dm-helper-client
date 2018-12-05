@@ -18,7 +18,7 @@ class DmCard extends LitElement {
         }
 
         [header] {
-          padding-left: 3%;
+          padding-left: 0.5em;
           color: var(--app-light-text-color);
           background-color: var(--app-primary-color);
           font-family: var(--app-header-font);
@@ -29,13 +29,12 @@ class DmCard extends LitElement {
         }
 
         [content] {
-          padding: 3%;
+          padding: 1em;
           font-family: var(--app-primary-font);
         }
 
         [actions] {
           padding: 1.5% repeat(3, 3%);
-          margin-top: 1%;
           border-top: 1px solid #e8e8e8;
         }
       </style>

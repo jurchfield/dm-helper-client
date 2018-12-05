@@ -6,10 +6,6 @@ class DmParticpant extends LitElement {
     return html`
       ${SharedStyles}
       <style>
-        h2 {
-          font-family: var(--app-header-font);
-        }
-
         [features] {
           display: grid;
           grid-template-columns: repeat(6, 16.667%);
@@ -24,7 +20,6 @@ class DmParticpant extends LitElement {
           font-weight: bold;
         }
       </style>
-      <h2>${this.participant.name}</h2>
       <p>${this.participant.size} ${this.participant.type}, ${this.participant.alignment}</p>
       <hr>
       <p><b>Armor Class:</b> ${this.participant.armor_class}</p>

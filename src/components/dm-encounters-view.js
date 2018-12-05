@@ -24,7 +24,7 @@ class DmEncountersView extends DmPageView {
       <style>
         #container {
           display: grid;
-          grid-template-columns: 25% 34% 40%;
+          grid-template-columns: 30% 70%;
           grid-column-gap: 1%;
         }
 
@@ -102,14 +102,6 @@ class DmEncountersView extends DmPageView {
             @initiative-changed="${this._updateParticipants.bind(this)}"
             @removed="${this._updateParticipants.bind(this)}">
           </dm-initiative>
-        </div>
-        <div id="selected-participant">
-          <dm-card>
-            <div slot="header">Selected Participant</div>
-            <div slot="content">
-              ${this._selectedParticipant ? html`<dm-participant .participant="${this._selectedParticipant}"></dm-participant>` : ''}
-            </div>
-          </dm-card>
         </div>
       </div>
 
