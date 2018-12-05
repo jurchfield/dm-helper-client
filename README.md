@@ -5,4 +5,18 @@
 
 This is the front end for the DM Toolbox web application. It was created using the PWA starter kit.
 
-Head over to the [documentation site](https://polymer.github.io/pwa-starter-kit/) for more details or check out [how to get started](https://polymer.github.io/pwa-starter-kit/setup/)!
+## Development
+
+### Running locally
+
+`npm run start`
+
+### Building
+
+`npm run build`
+
+### Deploying
+
+`npm run deploy`
+
+Head over to the [documentation site for PWA](https://polymer.github.io/pwa-starter-kit/) for more details or check out [how to get started with PWAs](https://polymer.github.io/pwa-starter-kit/setup/)!
