@@ -38,6 +38,13 @@ class DmEncountersView extends DmPageView {
         [button] {
           margin-top: 5%;
         }
+
+        @media only screen and (max-width: 640px) {
+          #container {
+            grid-template-columns: 100%;
+            grid-row-gap: 1.5em;
+          }
+        }
       </style>
       <div id="container">
         <div id="add-characters">
