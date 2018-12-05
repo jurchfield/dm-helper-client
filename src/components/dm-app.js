@@ -20,7 +20,6 @@ class DmApp extends LitElement {
     <style>
       :host {
         display: block;
-        --app-drawer-width: 15%;
 
         --app-primary-color: rgb(60, 120, 156);
         --app-secondary-color: #293237;
@@ -40,6 +39,23 @@ class DmApp extends LitElement {
         --app-primary-font: Spectral, serif;
       }
 
+      @media only screen and (min-width: 640px) {
+        :host {
+          --app-drawer-width: 12em;
+        }
+      }
+
+      @media only screen and (max-width: 640px) {
+        [main-title] {
+          font-size: 14pt;
+          text-align: right;
+        }
+
+        [logo-container] {
+          display: none;
+        }
+      }
+
       [main-title] {
         font-family: 'TiamatRegular';
         color: var(--app-light-text-color);
@@ -52,11 +68,16 @@ class DmApp extends LitElement {
 
       [logo-container] {
         text-align: right;
+        width: 10%
       }
 
       [toolbar-heading] {
         font-family: 'TiamatRegular';
         color: var(--app-dark-text-color);
+      }
+
+      [drawer-toggle] {
+        color: var(--app-light-text-color)
       }
 
       /* Workaround for IE11 displaying <main> as inline */
@@ -197,7 +218,7 @@ class DmApp extends LitElement {
       'start-encounter': () => import('./dm-encounters-view.js'),
     };
 
-    (pages[page] || pages.def)();
+    (pages[page] || pages['start-encounter'])();
 
     this._page = page;
   }
