@@ -61,7 +61,7 @@ class DmInitiative extends LitElement {
     <dm-card>
       <div slot="header">Initiative Order</div>
       <div slot="content">
-        ${this.participants.map(p => this._getParticipantCard(p))}
+        ${this.participants.length < 1 ? html`<p> No participants added</p>` : this.participants.map(p => this._getParticipantCard(p))}
       </div>
     </dm-card>
     `;
@@ -121,13 +121,13 @@ class DmInitiative extends LitElement {
               .disabled="${this.state !== 'initiativeRolled'}"
               icon="add"
               title="Heal"
-              @click="${this._toggleHealModal.bind(this)}">
+              @click="${this._toggleHealModal.bind(p)}">
             </paper-icon-button>
             <paper-icon-button
               .disabled="${this.state !== 'initiativeRolled'}"
               icon="remove"
               title="Damage"
-              @click="${this._toggleDamageModal.bind(this)}">
+              @click="${this._toggleDamageModal.bind(p)}">
             </paper-icon-button>
             <div participant-card-close-button>
               ${this.state === 'initiativeRolled' ? this._getInitiativeInput(p) : this._getDeleteButton(p)}
@@ -136,11 +136,11 @@ class DmInitiative extends LitElement {
         </div>
       </dm-card>
       <vaadin-dialog
-        @opened-changed="${this._damageParticipant.bind(p)}"
+        @opened-changed="${this._damageParticipant.bind(this)}"
         id="damage-dialog">
       </vaadin-dialog>
       <vaadin-dialog
-        @opened-changed="${this._healParticipant.bind(p)}"
+        @opened-changed="${this._healParticipant.bind(this)}"
         id="heal-dialog">
       </vaadin-dialog>
     `;
@@ -164,6 +164,7 @@ class DmInitiative extends LitElement {
   _getDeleteButton(p) {
     return html`
       <paper-icon-button
+        .disabled="${this.state === 'initiativeRolled'}"
         id="${p.id}" 
         @click="${this._removeParticipant.bind(p)}"
         icon="clear"
@@ -193,28 +194,31 @@ class DmInitiative extends LitElement {
   }
 
   _toggleDamageModal() {
-    this.shadowRoot.querySelector('#damage-dialog').opened = !this.shadowRoot.querySelector('#damage-dialog').opened;
+    vm._selectedParticipant = this;
+    vm.shadowRoot.querySelector('#damage-dialog').opened = !vm.shadowRoot.querySelector('#damage-dialog').opened;
   }
 
   _toggleHealModal() {
-    this.shadowRoot.querySelector('#heal-dialog').opened = !this.shadowRoot.querySelector('#damage-dialog').opened;
+    vm._selectedParticipant = this;
+    vm.shadowRoot.querySelector('#heal-dialog').opened = !vm.shadowRoot.querySelector('#damage-dialog').opened;
   }
 
   _damageParticipant() {
-    if (vm._damageTemp === 0 || !vm._damageTemp) return;
+    if (this._damageTemp === 0 || !this._damageTemp) return;
 
-    this.damage(vm._damageTemp);
-    vm.requestUpdate();
-    vm.dispatchEvent(new CustomEvent('damaged', { detail: vm.participants }));
-    vm._damageTemp = 0;
+    this._selectedParticipant.damage(this._damageTemp);
+    this.requestUpdate();
+    this.dispatchEvent(new CustomEvent('damaged', { detail: this.participants }));
+    this._damageTemp = 0;
   }
 
   _healParticipant() {
-    if (vm._healTemp === 0 || !vm._healTemp) return;
+    if (this._healTemp === 0 || !this._healTemp) return;
 
-    this.heal(vm._healTemp);
-    vm.requestUpdate();
-    vm.dispatchEvent(new CustomEvent('healed', { detail: vm.participants }));
+    this._selectedParticipant.heal(this._healTemp);
+    this.requestUpdate();
+    this.dispatchEvent(new CustomEvent('healed', { detail: this.participants }));
+    this._healTemp = 0;
   }
 
   _removeParticipant() {
