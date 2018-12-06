@@ -52,7 +52,10 @@ class DmParticpant extends LitElement {
       <p><b>Senses:</b> ${this.participant.senses}</p>      
       <p><b>Damage Immunities:</b> ${this.participant.damage_immunities}</p>      
       <p><b>Languages:</b> ${this.participant.languages}</p>      
-      <p><b>Challenge:</b> ${this.participant.challenge_rating}</p>  
+      <p><b>Challenge:</b> ${this.participant.challenge_rating}</p>
+      ${this.participant.special_abilities ? this._getSpecialAbilities() : ''}
+      ${this.participant.actions ? this._getActions() : ''}
+      ${this.participant.legendary_actions ? this._getLegendaryActions() : ''}
     `;
   }
 
@@ -60,6 +63,30 @@ class DmParticpant extends LitElement {
     return {
       participant: { type: Object },
     };
+  }
+
+  _getLegendaryActions() {
+    return html`
+      <hr>
+      <p><b>Legendary Actions</b></p>  
+      ${this.participant.legendary_actions.map(a => html`<p><b>${a.name}</b></p><p>${a.desc}</p>`)}
+    `;
+  }
+
+  _getSpecialAbilities() {
+    return html`
+      <hr>
+      <p><b>Traits</b></p>  
+      ${this.participant.special_abilities.map(a => html`<p><b>${a.name}</b></p><p>${a.desc}</p>`)}
+    `;
+  }
+
+  _getActions() {
+    return html`
+      <hr>
+      <p><b>Actions</b></p>  
+      ${this.participant.actions.map(a => html`<p><b>${a.name}</b></p><p>${a.desc}</p>`)}
+    `;
   }
 }
 

@@ -163,6 +163,7 @@ class DmEncountersView extends DmPageView {
     this._encounter = new Encounter({ participants: this._participants });
 
     this._encounter.rollInitiative();
+
     this._participants = this._encounter.participants;
 
     this.state = 'initiativeRolled';

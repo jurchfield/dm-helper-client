@@ -2,11 +2,14 @@ import { LitElement, html } from '@polymer/lit-element';
 import { SharedStyles } from './shared-styles';
 
 import '@polymer/iron-icons';
-import '@vaadin/vaadin-icons/vaadin-icons';
 import '@polymer/iron-icon';
 import '@polymer/paper-icon-button';
+import '@polymer/paper-button';
 import '@polymer/paper-input/paper-input';
 import '@polymer/iron-collapse';
+
+import '@vaadin/vaadin-icons/vaadin-icons';
+import '@vaadin/vaadin-dialog';
 
 import './dm-card';
 import './dm-participant';
@@ -66,6 +69,9 @@ class DmInitiative extends LitElement {
 
   constructor() {
     super();
+    this._damageTemp = 0;
+    this._healTemp = 0;
+
     vm = this;
   }
 
@@ -77,7 +83,20 @@ class DmInitiative extends LitElement {
       },
       state: { type: String },
       _selectedParticipant: { type: Object },
+      _damageTemp: { type: Number },
+      _healTemp: { type: Number },
     };
+  }
+
+  updated() {
+    const damageDialog = this.shadowRoot.querySelector('#damage-dialog');
+    const healDialog = this.shadowRoot.querySelector('#heal-dialog');
+
+    if (!damageDialog || !healDialog) return;
+
+    damageDialog.renderer = root => this._renderDialog('damage', root);
+
+    healDialog.renderer = root => this._renderDialog('heal', root);
   }
 
   _getParticipantCard(p) {
@@ -99,14 +118,16 @@ class DmInitiative extends LitElement {
         <div slot="actions">
           <div participant-card-actions>
             <paper-icon-button
+              .disabled="${this.state !== 'initiativeRolled'}"
               icon="add"
               title="Heal"
-              @click="${this._healParticipant.bind(p)}">
+              @click="${this._toggleHealModal.bind(this)}">
             </paper-icon-button>
-            <paper-icon-button 
+            <paper-icon-button
+              .disabled="${this.state !== 'initiativeRolled'}"
               icon="remove"
               title="Damage"
-              @click="${this._damageParticipant.bind(p)}">
+              @click="${this._toggleDamageModal.bind(this)}">
             </paper-icon-button>
             <div participant-card-close-button>
               ${this.state === 'initiativeRolled' ? this._getInitiativeInput(p) : this._getDeleteButton(p)}
@@ -114,6 +135,14 @@ class DmInitiative extends LitElement {
           </div>
         </div>
       </dm-card>
+      <vaadin-dialog
+        @opened-changed="${this._damageParticipant.bind(p)}"
+        id="damage-dialog">
+      </vaadin-dialog>
+      <vaadin-dialog
+        @opened-changed="${this._healParticipant.bind(p)}"
+        id="heal-dialog">
+      </vaadin-dialog>
     `;
   }
 
@@ -143,19 +172,47 @@ class DmInitiative extends LitElement {
     `;
   }
 
+  _renderDialog(type, root) {
+    if (root.firstElementChild) {
+      return;
+    }
+    const input = window.document.createElement('paper-input');
+
+    input.setAttribute('label', `${type.charAt(0).toUpperCase()}${type.slice(1)}`);
+    input.setAttribute('value', '0');
+    input.addEventListener('change', ({ target: { value } }) => {
+      vm[`_${type}Temp`] = Number(value);
+    });
+
+    root.appendChild(input);
+  }
+
   _selectParticipant() {
     vm.shadowRoot.getElementById(this.id).toggle();
     vm.dispatchEvent(new CustomEvent('selected', { detail: this }));
   }
 
+  _toggleDamageModal() {
+    this.shadowRoot.querySelector('#damage-dialog').opened = !this.shadowRoot.querySelector('#damage-dialog').opened;
+  }
+
+  _toggleHealModal() {
+    this.shadowRoot.querySelector('#heal-dialog').opened = !this.shadowRoot.querySelector('#damage-dialog').opened;
+  }
+
   _damageParticipant() {
-    this.damage(1);
+    if (vm._damageTemp === 0 || !vm._damageTemp) return;
+
+    this.damage(vm._damageTemp);
     vm.requestUpdate();
     vm.dispatchEvent(new CustomEvent('damaged', { detail: vm.participants }));
+    vm._damageTemp = 0;
   }
 
   _healParticipant() {
-    this.heal(1);
+    if (vm._healTemp === 0 || !vm._healTemp) return;
+
+    this.heal(vm._healTemp);
     vm.requestUpdate();
     vm.dispatchEvent(new CustomEvent('healed', { detail: vm.participants }));
   }

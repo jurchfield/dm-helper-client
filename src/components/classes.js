@@ -29,12 +29,20 @@ export class Participant {
 }
 
 export class Encounter {
-  constructor(config) {
-    Object.assign(this, { ...config, id: _guidGenerator() });
+  constructor({ participants }) {
+    Object.assign(this, { id: _guidGenerator(), _participants: participants });
+  }
+
+  get participants() {
+    return this._participants.map(p => new Participant(p));
+  }
+
+  set participants(p) {
+    this._participants = p;
   }
 
   rollInitiative() {
-    this.participants = this.participants.map(p => ({
+    this._participants = this.participants.map(p => ({
       ...p,
       initiative_roll: _roll(20, p.dexterity_modifier),
     }));
