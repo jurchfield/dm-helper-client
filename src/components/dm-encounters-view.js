@@ -24,7 +24,7 @@ class DmEncountersView extends DmPageView {
       <style>
         #container {
           display: grid;
-          grid-template-columns: 25% 34% 40%;
+          grid-template-columns: 30% 70%;
           grid-column-gap: 1%;
         }
 
@@ -37,6 +37,13 @@ class DmEncountersView extends DmPageView {
 
         [button] {
           margin-top: 5%;
+        }
+
+        @media only screen and (max-width: 640px) {
+          #container {
+            grid-template-columns: 100%;
+            grid-row-gap: 1.5em;
+          }
         }
       </style>
       <div id="container">
@@ -70,7 +77,7 @@ class DmEncountersView extends DmPageView {
                   raised
                   icon="av:stop"
                   title="Stop Encounter"
-                  @click="${this._startEncounter.bind(this)}">
+                  @click="${this._stopEncounter.bind(this)}">
                   Start
                 </paper-icon-button>
                 <paper-icon-button
@@ -88,19 +95,13 @@ class DmEncountersView extends DmPageView {
         <div id="initiative">
           <dm-initiative
             .participants="${this._participants}"
+            .state="${this.state}"
             @selected="${this._select.bind(this)}"
-            @damaged="${this._damage.bind(this)}"
-            @healed="${this._heal.bind(this)}"
-            @removed="${this._remove.bind(this)}">
+            @damaged="${this._updateParticipants.bind(this)}"
+            @healed="${this._updateParticipants.bind(this)}"
+            @initiative-changed="${this._updateParticipants.bind(this)}"
+            @removed="${this._updateParticipants.bind(this)}">
           </dm-initiative>
-        </div>
-        <div id="selected-participant">
-          <dm-card>
-            <div slot="header">Selected Participant</div>
-            <div slot="content">
-              ${this._selectedParticipant ? html`<dm-participant .participant="${this._selectedParticipant}"></dm-participant>` : ''}
-            </div>
-          </dm-card>
         </div>
       </div>
 
@@ -110,6 +111,7 @@ class DmEncountersView extends DmPageView {
 
   static get properties() {
     return {
+      state: { type: String },
       _creatures: { type: Array },
       _participants: { type: Array },
       _players: { type: Array },
@@ -149,15 +151,7 @@ class DmEncountersView extends DmPageView {
     }
   }
 
-  _remove({ detail: p }) {
-    this._participants = p;
-  }
-
-  _damage({ detail: p }) {
-    this._participants = p;
-  }
-
-  _heal({ detail: p }) {
+  _updateParticipants({ detail: p }) {
     this._participants = p;
   }
 
@@ -167,11 +161,17 @@ class DmEncountersView extends DmPageView {
 
   _startEncounter() {
     this._encounter = new Encounter({ participants: this._participants });
-    console.log(this._encounter);
 
     this._encounter.rollInitiative();
 
-    console.log(this._encounter);
+    this._participants = this._encounter.participants;
+
+    this.state = 'initiativeRolled';
+  }
+
+  _stopEncounter() {
+    this.state = 'idle';
+    this._participants = [];
   }
 }
 

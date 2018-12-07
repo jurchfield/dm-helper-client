@@ -68,7 +68,7 @@ class DmApp extends LitElement {
 
       [logo-container] {
         text-align: right;
-        width: 10%
+        width: 40%;
       }
 
       [toolbar-heading] {
