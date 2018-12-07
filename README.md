@@ -2,7 +2,7 @@
 
 # Dungeon Master Toolbox - Client
 
-This is the front end for the DM Toolbox web application. It was created using the PWA starter kit.
+This is the front end for the DM Toolbox web application. DM Toolbox assists Dungeon Master's using 5e to search for spells, equipent, attributes, classes, as well as manage encounters.
 
 ## Development
 
