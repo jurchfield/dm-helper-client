@@ -1,6 +1,7 @@
 import { html } from '@polymer/lit-element';
 import { DmPageView } from './dm-page-view';
 import { SharedStyles } from './shared-styles';
+import { Services } from './services';
 
 import '@vaadin/vaadin-combo-box/vaadin-combo-box';
 
@@ -45,13 +46,11 @@ class DmSpellsView extends DmPageView {
 
   constructor() {
     super();
-    this._baseUrl = 'https://us-central1-dm-helper-1f262.cloudfunctions.net/spells';
     this._spellList = [];
   }
 
   firstUpdated() {
-    fetch(this._baseUrl)
-      .then(r => r.json())
+    Services.spells.getAll()
       .then((spells) => {
         this._spellList = spells.map(s => ({ label: s.name, value: s }));
       })

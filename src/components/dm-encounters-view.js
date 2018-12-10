@@ -1,6 +1,7 @@
 import { html } from '@polymer/lit-element';
 import { DmPageView } from './dm-page-view';
 import { SharedStyles } from './shared-styles';
+import { Services } from './services';
 import {
   Participant,
   Encounter,
@@ -16,6 +17,7 @@ import '@polymer/iron-icons/av-icons';
 import './dm-card';
 import './dm-participant';
 import './dm-initiative';
+import './dm-dice-roller';
 
 class DmEncountersView extends DmPageView {
   render() {
@@ -30,7 +32,7 @@ class DmEncountersView extends DmPageView {
 
         [actions] {
           display: grid;
-          grid-template-columns: repeat(3, auto);
+          grid-template-columns: repeat(4, auto);
           grid-column-gap: 1%;
           justify-items: center
         }
@@ -88,6 +90,14 @@ class DmEncountersView extends DmPageView {
                   @click="${this._startEncounter.bind(this)}">
                   Start
                 </paper-icon-button>
+                <paper-icon-button
+                  button
+                  raised
+                  src="https://img.icons8.com/metro/1600/dice.png"
+                  title="Roll"
+                  @click="${this._rollDice.bind(this)}">
+                  Start
+                </paper-icon-button>
               </div>
             </div>
           </dm-card>
@@ -106,6 +116,11 @@ class DmEncountersView extends DmPageView {
       </div>
 
       <vaadin-dialog id="add-player-dialog" aria-label="simple"></vaadin-dialog>
+      <vaadin-dialog id="roll-die-dialog" aria-label="simple">
+        <template>
+          <dm-dice-roller></dm-dice-roller>
+        </template>
+      </vaadin-dialog>
     `;
   }
 
@@ -122,14 +137,12 @@ class DmEncountersView extends DmPageView {
 
   constructor() {
     super();
-    this._baseUrl = 'https://us-central1-dm-helper-1f262.cloudfunctions.net';
     this._participants = [];
     this._players = [{ label: 'Add New Player', value: 'add' }];
   }
 
   firstUpdated() {
-    fetch(`${this._baseUrl}/creatures`)
-      .then(res => res.json())
+    Services.creatures.getAll()
       .then((creatures) => {
         this._creatures = creatures.map(c => ({ label: c.name, value: c }));
       })
@@ -172,6 +185,12 @@ class DmEncountersView extends DmPageView {
   _stopEncounter() {
     this.state = 'idle';
     this._participants = [];
+  }
+
+  _rollDice() {
+    const dialog = this.shadowRoot.querySelector('#roll-die-dialog');
+
+    dialog.opened = true;
   }
 }
 
