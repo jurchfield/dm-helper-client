@@ -67,6 +67,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <meta property="og:site_name" content="dm-helper">
     <meta property="og:image" content="images/manifest/icon-144x144.png" />
 
+    <!-- <script src="https://www.gstatic.com/firebasejs/5.7.0/firebase.js"></script> -->
+    <script src="https://www.gstatic.com/firebasejs/5.7.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.7.0/firebase-auth.js"></script>
+    <script>
+      // Initialize Firebase
+      var config = {
+        apiKey: "AIzaSyAFl_jiMUsptXmvlI8SC35hu73EzY3f05I",
+        authDomain: "dm-helper-1f262.firebaseapp.com",
+        databaseURL: "https://dm-helper-1f262.firebaseio.com",
+        projectId: "dm-helper-1f262",
+        storageBucket: "dm-helper-1f262.appspot.com",
+        messagingSenderId: "342291879827"
+      };
+      firebase.initializeApp(config);
+    </script>
+
     <!-- Performance tip: hint to the browser to start the handshake for the fonts site -->
     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
     <script>
