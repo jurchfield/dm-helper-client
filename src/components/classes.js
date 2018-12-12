@@ -59,3 +59,16 @@ export class Encounter {
     }));
   }
 }
+
+export class User {
+  constructor({ ...props }) {
+    Object.assign(this, { ...props });
+  }
+
+  signOut() {
+    localStorage.removeItem('user');
+    return firebase
+      .auth()
+      .signOut();
+  }
+}

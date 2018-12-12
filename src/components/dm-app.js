@@ -4,6 +4,8 @@ import { installOfflineWatcher } from 'pwa-helpers/network';
 import { installRouter } from 'pwa-helpers/router';
 import { updateMetadata } from 'pwa-helpers/metadata';
 
+import { User } from './classes';
+
 import '@polymer/iron-iconset-svg/iron-iconset-svg';
 import '@polymer/app-layout/app-drawer/app-drawer';
 import '@polymer/paper-icon-button';
@@ -101,6 +103,10 @@ class DmApp extends LitElement {
         margin: 5% 0 5% 0;
       }
 
+      section a:hover {
+        cursor: pointer;
+      }
+
       section a[selected] {
         color: var(--app-drawer-selected-color);
       }
@@ -133,6 +139,7 @@ class DmApp extends LitElement {
           <a ?selected="${this._page === 'start-encounter'}" href="/start-encounter">Start Encounter</a>
           <a ?selected="${this._page === 'spell-search'}" href="/spell-search">Spell Search</a>
           <a ?selected="${this._page === 'weapon-search'}" href="/weapon-search">Weapon Search</a>
+          <a @click="${this._logInLogOut.bind(this)}">${this._user ? 'Log Out' : 'Log In'}</a>
         </section>
       </app-drawer>
       <app-header-layout>
@@ -149,6 +156,7 @@ class DmApp extends LitElement {
           <dm-encounters-view class="page" ?active="${this._page === 'start-encounter'}"></dm-encounters-view>
           <dm-spells-view class="page" ?active="${this._page === 'spell-search'}"></dm-spells-view>
           <dm-weapons-view class="page" ?active="${this._page === 'weapon-search'}"></dm-weapons-view>
+          <dm-login-view class="page" ?active="${this._page === 'login'}" @login="${this._handleLogin.bind(this)}"></dm-login-view>
           <my-view404 class="page" ?active="${this._page === 'view404'}"></my-view404>
         </main>
       </app-header-layout>
@@ -165,6 +173,7 @@ class DmApp extends LitElement {
       _page: { type: String },
       _snackbarOpened: { type: Boolean },
       _offline: { type: Boolean },
+      _user: { type: Object },
     };
   }
 
@@ -176,6 +185,7 @@ class DmApp extends LitElement {
   }
 
   firstUpdated() {
+
     installRouter(this._locationChanged.bind(this));
     installOfflineWatcher(this._offlineChanged.bind(this));
   }
@@ -187,6 +197,29 @@ class DmApp extends LitElement {
         title: pageTitle,
         description: pageTitle,
       });
+    }
+  }
+
+  _handleLogin() {
+    const userData = firebase.auth().currentUser;
+
+    if (!userData) return;
+
+    localStorage.setItem('user', JSON.stringify(userData));
+    window.history.pushState(null, '', '/start-encounter');
+    this._locationChanged();
+  }
+
+  _logInLogOut() {
+    if (this._user) {
+      this._user
+        .signOut()
+        .then(() => {
+          window.location.pathname = '/start-encounter';
+        });
+    } else {
+      window.history.pushState(null, '', '/login');
+      this._locationChanged();
     }
   }
 
@@ -212,10 +245,17 @@ class DmApp extends LitElement {
   }
 
   _loadPage(page) {
+    const user = localStorage.getItem('user');
+
+    if (user) {
+      this._user = new User(JSON.parse(user));
+    }
+
     const pages = {
       'spell-search': () => import('./dm-spells-view.js'),
       'weapon-search': () => import('./dm-weapons-view.js'),
       'start-encounter': () => import('./dm-encounters-view.js'),
+      login: () => import('./dm-login-view.js'),
     };
 
     (pages[page] || pages['start-encounter'])();
