@@ -22,13 +22,14 @@ class DmLoginView extends DmPageView {
       </style>
       <iron-form 
         id="login-form"
-        @iron-form-submit="${this._onLoginSubmitted.bind(this)}">
+        @iron-form-submit="${this._onFormSubmitted.bind(this)}">
         <form login-form>
           <paper-input 
             label="Email" 
             name="email"
             error-message="Invalid email."
             type="email"
+            auto-validate
             required>
           </paper-input>
           <paper-input 
@@ -38,23 +39,36 @@ class DmLoginView extends DmPageView {
             required>
           </paper-input>
           <div button-container>
-            <paper-button raised @click="${this._onSubmit.bind(this)}">Login </paper-button>
+            <paper-button raised @click="${this._onLogIn.bind(this)}">Login </paper-button>
+            <paper-button raised @click="${this._onSignUp.bind(this)}">Sign Up </paper-button>
           </div>
         </form>
       </iron-form>
     `;
   }
 
-  _onSubmit() {
+  static get properties() {
+    return {
+      _type: { type: String },
+    };
+  }
+
+  _onLogIn() {
+    this._type = 'signInWithEmailAndPassword';
     this.shadowRoot.querySelector('#login-form').submit();
   }
 
-  _onLoginSubmitted({ detail: { email, password } }) {
-    firebase
-      .auth()
-      .signInWithEmailAndPassword(email, password)
+  _onFormSubmitted({ detail: { email, password } }) {
+    const auth = firebase.auth();
+
+    auth[this._type](email, password)
       .then(res => this.dispatchEvent(new CustomEvent('login', { detail: res })))
       .catch(err => console.log(err));
+  }
+
+  _onSignUp() {
+    this._type = 'createUserWithEmailAndPassword';
+    this.shadowRoot.querySelector('#login-form').submit();
   }
 }
 

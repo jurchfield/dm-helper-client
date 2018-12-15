@@ -201,13 +201,13 @@ class DmApp extends LitElement {
   }
 
   _handleLogin() {
-    const userData = firebase.auth().currentUser;
-
-    if (!userData) return;
-
-    localStorage.setItem('user', JSON.stringify(userData));
-    window.history.pushState(null, '', '/start-encounter');
-    this._locationChanged();
+    firebase.auth().currentUser.getIdToken(true).then((idToken) => {
+      localStorage.setItem('token', idToken);
+      window.history.pushState(null, '', '/start-encounter');
+      this._locationChanged();
+    }).catch((error) => {
+      console.error(error);
+    });
   }
 
   _logInLogOut() {
@@ -245,10 +245,10 @@ class DmApp extends LitElement {
   }
 
   _loadPage(page) {
-    const user = localStorage.getItem('user');
+    const token = localStorage.getItem('token');
 
-    if (user) {
-      this._user = new User(JSON.parse(user));
+    if (token) {
+      this._user = new User(token);
     }
 
     const pages = {

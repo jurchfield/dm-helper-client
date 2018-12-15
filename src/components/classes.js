@@ -61,12 +61,12 @@ export class Encounter {
 }
 
 export class User {
-  constructor({ ...props }) {
-    Object.assign(this, { ...props });
+  constructor(token) {
+    Object.assign(this, { token });
   }
 
   signOut() {
-    localStorage.removeItem('user');
+    localStorage.removeItem('token');
     return firebase
       .auth()
       .signOut();
