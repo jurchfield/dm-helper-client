@@ -17,6 +17,10 @@ export class Fetcher {
   ) {
     const requestInit = {
       method,
+      headers: {
+        Token: this._token,
+        User: this._user,
+      },
       body: JSON.stringify(body),
     };
 
@@ -34,6 +38,11 @@ export class Fetcher {
    */
   constructor(entityName) {
     this._entityName = entityName;
+
+    if (!firebase.auth().currentUser) return;
+
+    this._token = localStorage.getItem('token');
+    this._user = firebase.auth().currentUser.email;
   }
 
   /** ---- CRUD FUNCTIONS ---- */
