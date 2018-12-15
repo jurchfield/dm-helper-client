@@ -9,6 +9,7 @@ import { User } from './classes';
 import '@polymer/iron-iconset-svg/iron-iconset-svg';
 import '@polymer/app-layout/app-drawer/app-drawer';
 import '@polymer/paper-icon-button';
+import '@polymer/paper-toast';
 import '@polymer/app-layout/app-drawer-layout/app-drawer-layout';
 import '@polymer/app-layout/app-header/app-header';
 import '@polymer/app-layout/app-scroll-effects/effects/waterfall';
@@ -153,17 +154,34 @@ class DmApp extends LitElement {
           </app-toolbar>
         </app-header>
         <main role="main">
-          <dm-encounters-view class="page" ?active="${this._page === 'start-encounter'}"></dm-encounters-view>
-          <dm-spells-view class="page" ?active="${this._page === 'spell-search'}"></dm-spells-view>
-          <dm-weapons-view class="page" ?active="${this._page === 'weapon-search'}"></dm-weapons-view>
-          <dm-login-view class="page" ?active="${this._page === 'login'}" @login="${this._handleLogin.bind(this)}"></dm-login-view>
+          <dm-encounters-view
+            class="page"
+            ?active="${this._page === 'start-encounter'}">
+          </dm-encounters-view>
+
+          <dm-spells-view
+            class="page"
+            ?active="${this._page === 'spell-search'}"
+            @toast="${this._showToast.bind(this)}">
+          </dm-spells-view>
+          
+          <dm-weapons-view
+            class="page"
+            ?active="${this._page === 'weapon-search'}">
+          </dm-weapons-view>
+
+          <dm-login-view
+            class="page"
+            ?active="${this._page === 'login'}"
+            @login="${this._handleLogin.bind(this)}"
+            @toast="${this._showToast.bind(this)}">
+          </dm-login-view>
+
           <my-view404 class="page" ?active="${this._page === 'view404'}"></my-view404>
         </main>
       </app-header-layout>
-    </app-drawer-layout> 
-
-    <snack-bar ?active="${this._snackbarOpened}">
-        You are now ${this._offline ? 'offline' : 'online'}.</snack-bar>
+    </app-drawer-layout>
+    <paper-toast id="toast"></paper-toast>
     `;
   }
 
@@ -185,7 +203,6 @@ class DmApp extends LitElement {
   }
 
   firstUpdated() {
-
     installRouter(this._locationChanged.bind(this));
     installOfflineWatcher(this._offlineChanged.bind(this));
   }
@@ -200,12 +217,20 @@ class DmApp extends LitElement {
     }
   }
 
+  _showToast({ detail }) {
+    this.shadowRoot.querySelector('#toast').show(detail);
+  }
+
   _handleLogin() {
     firebase.auth().currentUser.getIdToken(true).then((idToken) => {
       localStorage.setItem('token', idToken);
+
       window.history.pushState(null, '', '/start-encounter');
+
       this._locationChanged();
     }).catch((error) => {
+      this._showToast({ detail: error.message });
+
       console.error(error);
     });
   }

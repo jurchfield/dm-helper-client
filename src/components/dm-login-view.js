@@ -63,7 +63,10 @@ class DmLoginView extends DmPageView {
 
     auth[this._type](email, password)
       .then(res => this.dispatchEvent(new CustomEvent('login', { detail: res })))
-      .catch(err => console.log(err));
+      .catch((err) => {
+        this.showToast(err.message);
+        console.error(err);
+      });
   }
 
   _onSignUp() {
