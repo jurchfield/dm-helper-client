@@ -1,3 +1,5 @@
+import { User } from './classes';
+
 const baseUrl = 'https://us-central1-dm-helper-1f262.cloudfunctions.net';
 
 export class Fetcher {
@@ -15,18 +17,19 @@ export class Fetcher {
     uri,
     body,
   ) {
-    const requestInit = {
-      method,
-      headers: {
-        Token: this._token,
-        User: this._user,
-      },
-      body: JSON.stringify(body),
-    };
+    return User.getAuthToken((Token) => {
+      const requestInit = {
+        method,
+        headers: {
+          Token,
+        },
+        body: JSON.stringify(body),
+      };
 
-    return fetch(`${baseUrl}${uri}`, requestInit)
-      .then(res => res.json())
-      .then(data => data.data || data);
+      return fetch(`${baseUrl}${uri}`, requestInit)
+        .then(res => res.json())
+        .then(data => data.data || data);
+    });
   }
 
   /** ---- CONSTRUCTOR ---- */
@@ -38,11 +41,6 @@ export class Fetcher {
    */
   constructor(entityName) {
     this._entityName = entityName;
-
-    if (!firebase.auth().currentUser) return;
-
-    this._token = localStorage.getItem('token');
-    this._user = firebase.auth().currentUser.email;
   }
 
   /** ---- CRUD FUNCTIONS ---- */

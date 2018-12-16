@@ -140,7 +140,7 @@ class DmApp extends LitElement {
           <a ?selected="${this._page === 'start-encounter'}" href="/start-encounter">Start Encounter</a>
           <a ?selected="${this._page === 'spell-search'}" href="/spell-search">Spell Search</a>
           <a ?selected="${this._page === 'weapon-search'}" href="/weapon-search">Weapon Search</a>
-          <a @click="${this._logInLogOut.bind(this)}">${this._user ? 'Log Out' : 'Log In'}</a>
+          <a @click="${this._logInLogOut.bind(this)}">${this._loggedIn ? 'Log Out' : 'Log In'}</a>
         </section>
       </app-drawer>
       <app-header-layout>
@@ -191,7 +191,7 @@ class DmApp extends LitElement {
       _page: { type: String },
       _snackbarOpened: { type: Boolean },
       _offline: { type: Boolean },
-      _user: { type: Object },
+      _loggedIn: { type: Object },
     };
   }
 
@@ -200,6 +200,10 @@ class DmApp extends LitElement {
 
     // See https://www.polymer-project.org/3.0/docs/devguide/settings#setting-passive-touch-gestures
     setPassiveTouchGestures(true);
+
+    User.addAuthListener((user) => {
+      this._loggedIn = user;
+    });
   }
 
   firstUpdated() {
@@ -222,22 +226,12 @@ class DmApp extends LitElement {
   }
 
   _handleLogin() {
-    firebase.auth().currentUser.getIdToken(true).then((idToken) => {
-      localStorage.setItem('token', idToken);
-
-      window.history.pushState(null, '', '/start-encounter');
-
-      this._locationChanged();
-    }).catch((error) => {
-      this._showToast({ detail: error.message });
-
-      console.error(error);
-    });
+    window.location.pathname = '/start-encounter';
   }
 
   _logInLogOut() {
-    if (this._user) {
-      this._user
+    if (this._loggedIn) {
+      User
         .signOut()
         .then(() => {
           window.location.pathname = '/start-encounter';
@@ -270,12 +264,6 @@ class DmApp extends LitElement {
   }
 
   _loadPage(page) {
-    const token = localStorage.getItem('token');
-
-    if (token) {
-      this._user = new User(token);
-    }
-
     const pages = {
       'spell-search': () => import('./dm-spells-view.js'),
       'weapon-search': () => import('./dm-weapons-view.js'),

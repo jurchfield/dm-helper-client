@@ -61,14 +61,31 @@ export class Encounter {
 }
 
 export class User {
-  constructor(token) {
-    Object.assign(this, { token });
+  static isLoggedIn() {
+    return firebase.auth().currentUser;
   }
 
-  signOut() {
-    localStorage.removeItem('token');
+  static getAuthToken(success) {
+    const user = firebase.auth().currentUser;
+
+    if (!user) return success();
+
+    return user
+      .getIdToken(true)
+      .then(token => success(token))
+      .catch((err) => {
+        console.error(err);
+        return success();
+      });
+  }
+
+  static signOut() {
     return firebase
       .auth()
       .signOut();
+  }
+
+  static addAuthListener(callback) {
+    return firebase.auth().onAuthStateChanged(callback);
   }
 }
