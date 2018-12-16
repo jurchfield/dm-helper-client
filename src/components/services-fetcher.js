@@ -1,3 +1,5 @@
+import { User } from './classes';
+
 const baseUrl = 'https://us-central1-dm-helper-1f262.cloudfunctions.net';
 
 export class Fetcher {
@@ -15,14 +17,19 @@ export class Fetcher {
     uri,
     body,
   ) {
-    const requestInit = {
-      method,
-      body: JSON.stringify(body),
-    };
+    return User.getAuthToken((Token) => {
+      const requestInit = {
+        method,
+        headers: {
+          Token,
+        },
+        body: JSON.stringify(body),
+      };
 
-    return fetch(`${baseUrl}${uri}`, requestInit)
-      .then(res => res.json())
-      .then(data => data.data || data);
+      return fetch(`${baseUrl}${uri}`, requestInit)
+        .then(res => res.json())
+        .then(data => data.data || data);
+    });
   }
 
   /** ---- CONSTRUCTOR ---- */

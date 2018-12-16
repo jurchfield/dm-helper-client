@@ -5,6 +5,7 @@ import { Services } from './services';
 import {
   Participant,
   Encounter,
+  User,
 } from './classes';
 
 import '@vaadin/vaadin-combo-box';
@@ -58,11 +59,13 @@ class DmEncountersView extends DmPageView {
                 .items="${this._creatures}"
                 @selected-item-changed="${this._participantInputChanged.bind(this)}">
               </vaadin-combo-box>
-              <vaadin-combo-box 
-                label="Add Player"
-                .items="${this._players}"
-                @selected-item-changed="${this._playerInputChanged.bind(this)}">
-              </vaadin-combo-box>
+              ${this._loggedIn ? html`
+                <vaadin-combo-box 
+                  label="Add Player"
+                  .items="${this._players}"
+                  @selected-item-changed="${this._playerInputChanged.bind(this)}">
+                </vaadin-combo-box>
+              ` : ''}
             </div>
             <div slot="actions">
               <div actions>
@@ -82,14 +85,17 @@ class DmEncountersView extends DmPageView {
                   @click="${this._stopEncounter.bind(this)}">
                   Start
                 </paper-icon-button>
-                <paper-icon-button
-                  button
-                  raised
-                  icon="save"
-                  title="Save Encounter"
-                  @click="${this._startEncounter.bind(this)}">
-                  Start
-                </paper-icon-button>
+                ${this._loggedIn ? html`
+                  <paper-icon-button
+                    button
+                    raised
+                    icon="save"
+                    title="Save Encounter"
+                    @click="${this._startEncounter.bind(this)}">
+                    Start
+                  </paper-icon-button>
+                ` : ''}
+                
                 <paper-icon-button
                   button
                   raised
@@ -132,6 +138,7 @@ class DmEncountersView extends DmPageView {
       _players: { type: Array },
       _selectedParticipant: { type: Object },
       _encounter: { type: Object },
+      _loggedIn: { type: Object },
     };
   }
 
@@ -139,6 +146,9 @@ class DmEncountersView extends DmPageView {
     super();
     this._participants = [];
     this._players = [{ label: 'Add New Player', value: 'add' }];
+    User.addAuthListener((user) => {
+      this._loggedIn = user;
+    });
   }
 
   firstUpdated() {

@@ -4,9 +4,12 @@ import { installOfflineWatcher } from 'pwa-helpers/network';
 import { installRouter } from 'pwa-helpers/router';
 import { updateMetadata } from 'pwa-helpers/metadata';
 
+import { User } from './classes';
+
 import '@polymer/iron-iconset-svg/iron-iconset-svg';
 import '@polymer/app-layout/app-drawer/app-drawer';
 import '@polymer/paper-icon-button';
+import '@polymer/paper-toast';
 import '@polymer/app-layout/app-drawer-layout/app-drawer-layout';
 import '@polymer/app-layout/app-header/app-header';
 import '@polymer/app-layout/app-scroll-effects/effects/waterfall';
@@ -101,6 +104,10 @@ class DmApp extends LitElement {
         margin: 5% 0 5% 0;
       }
 
+      section a:hover {
+        cursor: pointer;
+      }
+
       section a[selected] {
         color: var(--app-drawer-selected-color);
       }
@@ -133,6 +140,7 @@ class DmApp extends LitElement {
           <a ?selected="${this._page === 'start-encounter'}" href="/start-encounter">Start Encounter</a>
           <a ?selected="${this._page === 'spell-search'}" href="/spell-search">Spell Search</a>
           <a ?selected="${this._page === 'weapon-search'}" href="/weapon-search">Weapon Search</a>
+          <a @click="${this._logInLogOut.bind(this)}">${this._loggedIn ? 'Log Out' : 'Log In'}</a>
         </section>
       </app-drawer>
       <app-header-layout>
@@ -146,16 +154,34 @@ class DmApp extends LitElement {
           </app-toolbar>
         </app-header>
         <main role="main">
-          <dm-encounters-view class="page" ?active="${this._page === 'start-encounter'}"></dm-encounters-view>
-          <dm-spells-view class="page" ?active="${this._page === 'spell-search'}"></dm-spells-view>
-          <dm-weapons-view class="page" ?active="${this._page === 'weapon-search'}"></dm-weapons-view>
+          <dm-encounters-view
+            class="page"
+            ?active="${this._page === 'start-encounter'}">
+          </dm-encounters-view>
+
+          <dm-spells-view
+            class="page"
+            ?active="${this._page === 'spell-search'}"
+            @toast="${this._showToast.bind(this)}">
+          </dm-spells-view>
+          
+          <dm-weapons-view
+            class="page"
+            ?active="${this._page === 'weapon-search'}">
+          </dm-weapons-view>
+
+          <dm-login-view
+            class="page"
+            ?active="${this._page === 'login'}"
+            @login="${this._handleLogin.bind(this)}"
+            @toast="${this._showToast.bind(this)}">
+          </dm-login-view>
+
           <my-view404 class="page" ?active="${this._page === 'view404'}"></my-view404>
         </main>
       </app-header-layout>
-    </app-drawer-layout> 
-
-    <snack-bar ?active="${this._snackbarOpened}">
-        You are now ${this._offline ? 'offline' : 'online'}.</snack-bar>
+    </app-drawer-layout>
+    <paper-toast id="toast"></paper-toast>
     `;
   }
 
@@ -165,6 +191,7 @@ class DmApp extends LitElement {
       _page: { type: String },
       _snackbarOpened: { type: Boolean },
       _offline: { type: Boolean },
+      _loggedIn: { type: Object },
     };
   }
 
@@ -173,6 +200,10 @@ class DmApp extends LitElement {
 
     // See https://www.polymer-project.org/3.0/docs/devguide/settings#setting-passive-touch-gestures
     setPassiveTouchGestures(true);
+
+    User.addAuthListener((user) => {
+      this._loggedIn = user;
+    });
   }
 
   firstUpdated() {
@@ -187,6 +218,27 @@ class DmApp extends LitElement {
         title: pageTitle,
         description: pageTitle,
       });
+    }
+  }
+
+  _showToast({ detail }) {
+    this.shadowRoot.querySelector('#toast').show(detail);
+  }
+
+  _handleLogin() {
+    window.location.pathname = '/start-encounter';
+  }
+
+  _logInLogOut() {
+    if (this._loggedIn) {
+      User
+        .signOut()
+        .then(() => {
+          window.location.pathname = '/start-encounter';
+        });
+    } else {
+      window.history.pushState(null, '', '/login');
+      this._locationChanged();
     }
   }
 
@@ -216,6 +268,7 @@ class DmApp extends LitElement {
       'spell-search': () => import('./dm-spells-view.js'),
       'weapon-search': () => import('./dm-weapons-view.js'),
       'start-encounter': () => import('./dm-encounters-view.js'),
+      login: () => import('./dm-login-view.js'),
     };
 
     (pages[page] || pages['start-encounter'])();

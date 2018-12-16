@@ -28,4 +28,8 @@ export class DmPageView extends LitElement {
     this._snackbarOpened = true;
     this.__snackbarTimer = setTimeout(() => { this._snackbarOpened = false; }, 3000);
   }
+
+  showToast(message) {
+    this.dispatchEvent(new CustomEvent('toast', { detail: message }));
+  }
 }
