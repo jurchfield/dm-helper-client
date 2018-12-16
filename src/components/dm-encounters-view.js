@@ -1,9 +1,11 @@
 import { html } from '@polymer/lit-element';
 import { DmPageView } from './dm-page-view';
 import { SharedStyles } from './shared-styles';
+import { Services } from './services';
 import {
   Participant,
   Encounter,
+  User,
 } from './classes';
 
 import '@vaadin/vaadin-combo-box';
@@ -16,6 +18,7 @@ import '@polymer/iron-icons/av-icons';
 import './dm-card';
 import './dm-participant';
 import './dm-initiative';
+import './dm-dice-roller';
 
 class DmEncountersView extends DmPageView {
   render() {
@@ -30,7 +33,7 @@ class DmEncountersView extends DmPageView {
 
         [actions] {
           display: grid;
-          grid-template-columns: repeat(3, auto);
+          grid-template-columns: repeat(4, auto);
           grid-column-gap: 1%;
           justify-items: center
         }
@@ -56,11 +59,13 @@ class DmEncountersView extends DmPageView {
                 .items="${this._creatures}"
                 @selected-item-changed="${this._participantInputChanged.bind(this)}">
               </vaadin-combo-box>
-              <vaadin-combo-box 
-                label="Add Player"
-                .items="${this._players}"
-                @selected-item-changed="${this._playerInputChanged.bind(this)}">
-              </vaadin-combo-box>
+              ${this._loggedIn ? html`
+                <vaadin-combo-box 
+                  label="Add Player"
+                  .items="${this._players}"
+                  @selected-item-changed="${this._playerInputChanged.bind(this)}">
+                </vaadin-combo-box>
+              ` : ''}
             </div>
             <div slot="actions">
               <div actions>
@@ -80,12 +85,23 @@ class DmEncountersView extends DmPageView {
                   @click="${this._stopEncounter.bind(this)}">
                   Start
                 </paper-icon-button>
+                ${this._loggedIn ? html`
+                  <paper-icon-button
+                    button
+                    raised
+                    icon="save"
+                    title="Save Encounter"
+                    @click="${this._startEncounter.bind(this)}">
+                    Start
+                  </paper-icon-button>
+                ` : ''}
+                
                 <paper-icon-button
                   button
                   raised
-                  icon="save"
-                  title="Save Encounter"
-                  @click="${this._startEncounter.bind(this)}">
+                  src="https://img.icons8.com/metro/1600/dice.png"
+                  title="Roll"
+                  @click="${this._rollDice.bind(this)}">
                   Start
                 </paper-icon-button>
               </div>
@@ -106,6 +122,11 @@ class DmEncountersView extends DmPageView {
       </div>
 
       <vaadin-dialog id="add-player-dialog" aria-label="simple"></vaadin-dialog>
+      <vaadin-dialog id="roll-die-dialog" aria-label="simple">
+        <template>
+          <dm-dice-roller></dm-dice-roller>
+        </template>
+      </vaadin-dialog>
     `;
   }
 
@@ -117,19 +138,21 @@ class DmEncountersView extends DmPageView {
       _players: { type: Array },
       _selectedParticipant: { type: Object },
       _encounter: { type: Object },
+      _loggedIn: { type: Object },
     };
   }
 
   constructor() {
     super();
-    this._baseUrl = 'https://us-central1-dm-helper-1f262.cloudfunctions.net';
     this._participants = [];
     this._players = [{ label: 'Add New Player', value: 'add' }];
+    User.addAuthListener((user) => {
+      this._loggedIn = user;
+    });
   }
 
   firstUpdated() {
-    fetch(`${this._baseUrl}/creatures`)
-      .then(res => res.json())
+    Services.creatures.getAll()
       .then((creatures) => {
         this._creatures = creatures.map(c => ({ label: c.name, value: c }));
       })
@@ -172,6 +195,12 @@ class DmEncountersView extends DmPageView {
   _stopEncounter() {
     this.state = 'idle';
     this._participants = [];
+  }
+
+  _rollDice() {
+    const dialog = this.shadowRoot.querySelector('#roll-die-dialog');
+
+    dialog.opened = true;
   }
 }
 

@@ -177,13 +177,27 @@ class DmInitiative extends LitElement {
     if (root.firstElementChild) {
       return;
     }
+
+    const dialog = this.shadowRoot.querySelector(`#${type}-dialog`);
+
     const input = window.document.createElement('paper-input');
 
     input.setAttribute('label', `${type.charAt(0).toUpperCase()}${type.slice(1)}`);
-    input.setAttribute('value', '0');
+    input.setAttribute('value', vm[`_${type}Temp`]);
+
+    // on change set damage/heal
     input.addEventListener('change', ({ target: { value } }) => {
       vm[`_${type}Temp`] = Number(value);
     });
+
+    // // on enter do the same, close the dialog
+    // input.addEventListener('keypress', ({ charCode, target: { value } }) => {
+    //   if (charCode !== 13) return;
+    //   vm[`_${type}Temp`] = Number(value);
+    //   dialog.opened = false;
+    //   console.log(this._damageTemp);
+
+    // });
 
     root.appendChild(input);
   }

@@ -38,6 +38,12 @@ export const SharedStyles = html`
     width: 100%;
   }
 
+  paper-button {
+    text-transform: none;
+  }
+
+  --paper-input-container-focus-color: var(--app-primary-color);
+
   @media only screen and (max-width: 640px) {
     .attributes-table {
       width: 100%;

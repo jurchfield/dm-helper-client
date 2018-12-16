@@ -5,8 +5,19 @@ function _guidGenerator() {
   return (`${S4()}${S4()}-${S4()}-${S4()}-${S4()}-${S4()}${S4()}${S4()}`);
 }
 
-function _roll(die, mod) {
-  return Math.round(Math.random() * (die - 1) + 1 + mod);
+/**
+ * @name roll
+ * @param {Number} die - die type
+ * @param {Number} amt - amount to roll
+ * @param {Number} mod - modifier
+ */
+export function roll(die, amt, mod) {
+  let result = 0;
+
+  for (let i = 0; i < amt; i++) {
+    result += Math.round(Math.random() * (die - 1) + 1);
+  }
+  return (result + mod);
 }
 
 export class Participant {
@@ -44,7 +55,37 @@ export class Encounter {
   rollInitiative() {
     this._participants = this.participants.map(p => ({
       ...p,
-      initiative_roll: _roll(20, p.dexterity_modifier),
+      initiative_roll: roll(20, 1, p.dexterity_modifier),
     }));
+  }
+}
+
+export class User {
+  static isLoggedIn() {
+    return firebase.auth().currentUser;
+  }
+
+  static getAuthToken(success) {
+    const user = firebase.auth().currentUser;
+
+    if (!user) return success();
+
+    return user
+      .getIdToken(true)
+      .then(token => success(token))
+      .catch((err) => {
+        console.error(err);
+        return success();
+      });
+  }
+
+  static signOut() {
+    return firebase
+      .auth()
+      .signOut();
+  }
+
+  static addAuthListener(callback) {
+    return firebase.auth().onAuthStateChanged(callback);
   }
 }
