@@ -18,6 +18,7 @@ import '@polymer/iron-icons/av-icons';
 import './dm-card';
 import './dm-participant';
 import './dm-initiative';
+import './dm-add-character';
 import './dm-dice-roller';
 
 class DmEncountersView extends DmPageView {
@@ -109,19 +110,9 @@ class DmEncountersView extends DmPageView {
           </dm-card>
         </div>
         <div id="initiative">
-          <dm-initiative
-            .participants="${this._participants}"
-            .state="${this.state}"
-            @selected="${this._select.bind(this)}"
-            @damaged="${this._updateParticipants.bind(this)}"
-            @healed="${this._updateParticipants.bind(this)}"
-            @initiative-changed="${this._updateParticipants.bind(this)}"
-            @removed="${this._updateParticipants.bind(this)}">
-          </dm-initiative>
+          ${this._showCharacterAdd ? this._getAddCharacterView() : this._getInitiativeView()}
         </div>
       </div>
-
-      <vaadin-dialog id="add-player-dialog" aria-label="simple"></vaadin-dialog>
       <vaadin-dialog id="roll-die-dialog" aria-label="simple">
         <template>
           <dm-dice-roller></dm-dice-roller>
@@ -139,11 +130,13 @@ class DmEncountersView extends DmPageView {
       _selectedParticipant: { type: Object },
       _encounter: { type: Object },
       _loggedIn: { type: Object },
+      _showCharacterAdd: { type: Boolean },
     };
   }
 
   constructor() {
     super();
+    this._showCharacterAdd = false;
     this._participants = [];
     this._players = [{ label: 'Add New Player', value: 'add' }];
     User.addAuthListener((user) => {
@@ -159,6 +152,27 @@ class DmEncountersView extends DmPageView {
       .catch(err => console.error(err));
   }
 
+  _getInitiativeView() {
+    return html`
+    <dm-initiative
+      .participants="${this._participants}"
+      .state="${this.state}"
+      @selected="${this._select.bind(this)}"
+      @damaged="${this._updateParticipants.bind(this)}"
+      @healed="${this._updateParticipants.bind(this)}"
+      @initiative-changed="${this._updateParticipants.bind(this)}"
+      @removed="${this._updateParticipants.bind(this)}">
+    </dm-initiative>`;
+  }
+
+  _getAddCharacterView() {
+    return html`
+      <dm-add-character>
+      
+      </dm-add-character>
+    `;
+  }
+
   _participantInputChanged({ target: { value } }) {
     if (!value) return;
     const uParticipant = JSON.parse(JSON.stringify(value));
@@ -170,7 +184,7 @@ class DmEncountersView extends DmPageView {
 
   _playerInputChanged({ target: { value } }) {
     if (value === 'add') {
-      this.shadowRoot.querySelector('#add-player-dialog').opened = true;
+      this._showCharacterAdd = true;
     }
   }
 
