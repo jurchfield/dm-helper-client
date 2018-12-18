@@ -37,7 +37,7 @@ export class Fetcher {
   /**
    * @name constructor
    * @param entityName - name of entity
-   * @desc constructs instance of Q
+   * @desc constructs instance of Fetcher
    */
   constructor(entityName) {
     this._entityName = entityName;

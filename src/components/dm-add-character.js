@@ -1,6 +1,7 @@
 import { html, LitElement } from '@polymer/lit-element';
 
 import { SharedStyles } from './shared-styles';
+import { Services } from './services';
 
 import '@polymer/iron-form';
 import '@polymer/paper-button';
@@ -37,8 +38,8 @@ class DmAddCharacter extends LitElement {
 
         [name-container] {
           display: grid;
-          grid-template-columns: 90% auto;
-          grid-gap: 5%;
+          grid-template-columns: 45% 45% auto;
+          grid-gap: 2%;
           align-items: center;
         }
       </style>
@@ -66,17 +67,41 @@ class DmAddCharacter extends LitElement {
                     required>
                   </paper-input>
                   <paper-input 
-                    label="Race" 
-                    name="race"
-                    type="text"
-                    value="Human"
-                    required>
-                  </paper-input>
-                  <paper-input 
                     label="Alignment" 
                     name="alignment"
                     value="No Alignment"
                     type="text">
+                  </paper-input>
+                </div>
+              </dm-card>
+              <dm-card inner-card>
+                <div slot="content">
+                  <vaadin-combo-box
+                    name="race"
+                    label="Race"
+                    .items="${this._races}"
+                    @selected-item-changed="${this._onRaceChanged.bind(this)}">
+                  </vaadin-combo-box>
+                  <paper-input 
+                    label="Other" 
+                    name="customRace"
+                    type="text"
+                    value="">
+                  </paper-input>
+                </div>
+              </dm-card>
+              <dm-card inner-card>
+                <div slot="content">
+                  <vaadin-combo-box
+                    name="class"
+                    label="Class"
+                    .items="${this._classes}">
+                  </vaadin-combo-box>
+                  <paper-input 
+                    label="Other" 
+                    name="customRace"
+                    type="text"
+                    value="">
                   </paper-input>
                 </div>
               </dm-card>
@@ -150,6 +175,39 @@ class DmAddCharacter extends LitElement {
                       required>
                     </paper-input>
                   </div>
+                  <!-- SAVES -->
+                  <div scores-container>
+                    <paper-input 
+                      label="Save" 
+                      name="strength_save"
+                      type="number">
+                    </paper-input>
+                    <paper-input 
+                      label="Save" 
+                      name="dexterity_save"
+                      type="number">
+                    </paper-input>
+                    <paper-input 
+                      label="Save" 
+                      name="constitution_save"
+                      type="number">
+                    </paper-input>
+                    <paper-input 
+                      label="Save" 
+                      name="intelligence_save"
+                      type="number">
+                    </paper-input>
+                    <paper-input 
+                      label="Save" 
+                      name="wisdom_save"
+                      type="number">
+                    </paper-input>
+                    <paper-input 
+                      label="Save" 
+                      name="charisma_save"
+                      type="number">
+                    </paper-input>
+                  </div>
                 </div>
               </dm-card>
               ${this._generateListBox('traits')}
@@ -175,19 +233,64 @@ class DmAddCharacter extends LitElement {
       actions: { type: Array },
       reactions: { type: Array },
       legendary_actions: { type: Array },
+      _races: { type: Array },
+      _traits: { type: Array },
+      _actions: { type: Array },
+      _reactions: { type: Array },
+      _legendary_actions: { type: Array },
+      _classes: { type: Array },
     };
   }
 
   constructor() {
     super();
     vm = this;
+
+    // form values
     this.traits = [];
     this.actions = [];
     this.reactions = [];
     this.legendary_actions = [];
+
+    // dropdown values
+    this._races = [];
+    this._traits = [];
+    this._actions = [];
+    this._reactions = [];
+    this._legendary_actions = [];
+    this._classes = [];
+  }
+
+  firstUpdated() {
+    Services.races.getAll()
+      .then((races) => {
+        this._races = races.map(({ name }) => ({ label: name, value: name }));
+      });
+    Services.traits.getAll()
+      .then((traits) => {
+        this._traits = traits.map(({ name, ...rest }) => ({ label: name, value: name, ...rest }));
+        this._rawTraits = traits.map(({ name, ...rest }) => ({ label: name, value: name, ...rest }));
+      });
+    Services.classes.getAll()
+      .then((classes) => {
+        this._classes = classes.map(({ name, ...rest }) => ({ label: name, value: name, ...rest }));
+      });
+  }
+
+  _onRaceChanged({ target: { value } }) {
+    this._traits = this._rawTraits.filter(
+      t => (t.races.filter(r => r.name.includes(value)).length > 0),
+    );
   }
 
   _generateListBox(type) {
+    function _onNameChanged({ target: { value } }) {
+      if (value === '' || vm[`_${type}`].length === 0) return;
+      const { desc } = vm[`_${type}`].find(t => t.label === value);
+      console.log(this);
+      [vm.shadowRoot.querySelector(`[id="${type}${this}"]`).value] = desc;
+    }
+
     return html`
     <dm-card inner-card>
       <div slot="header">
@@ -196,26 +299,37 @@ class DmAddCharacter extends LitElement {
       <div slot="content">
         ${this[type].length === 0 ? html`No ${type} added.` : ''}
         ${this[type].map((t, index) => html`
-        <div name-container>
-          <paper-input
-            required
-            label="Name"
-            name="${type}">
-          </paper-input>
-          <paper-icon-button
-            icon="close"
-            title="Remove"
-            @click="${this._removeItem.bind({ type, index })}">
-            Start
-          </paper-icon-button>
-        </div>
-       
-        <paper-textarea
-          required
-          label="Description"
-          rows="3"
-          name="${type}">
-        </paper-textarea>
+        <dm-card inner-card>
+          <div slot="content">
+            <div name-container>
+              <vaadin-combo-box
+                name="${type}"
+                label="Name"
+                index="${index}"
+                @selected-item-changed="${_onNameChanged.bind(index)}"
+                .items="${this[`_${type}`]}">
+              </vaadin-combo-box>
+              <paper-input
+                label="Other"
+                name="${type}">
+              </paper-input>
+              <paper-icon-button
+                icon="close"
+                title="Remove"
+                @click="${this._removeItem.bind({ type, index })}">
+                Start
+              </paper-icon-button>
+            </div>
+            <paper-textarea
+              id="${type}${index}"
+              required
+              label="Description"
+              rows="3"
+              name="${type}">
+            </paper-textarea>
+          </div>
+        </dm-card>
+        
         `)}
       </div>
       <div slot="actions">
@@ -242,6 +356,7 @@ class DmAddCharacter extends LitElement {
     } = detail;
 
     const character = {
+      type: 'Player',
       special_abilities: this._createNameDescArray(traits),
       actions: this._createNameDescArray(actions),
       reactions: this._createNameDescArray(reactions),
@@ -265,12 +380,16 @@ class DmAddCharacter extends LitElement {
   }
 
   _createNameDescArray(arr = []) {
-    return arr.reduce((pV, name, i) => {
-      if ((i + 1) % 2 == 0) return pV;
+    const chunks = arr.reduce((all, one, i) => {
+      const ch = Math.floor(i / 3);
+      all[ch] = [].concat((all[ch] || []), one);
+      return all;
+    }, []);
 
+    return chunks.reduce((pV, [name, other, desc]) => {
       pV.push({
-        name,
-        desc: arr[i + 1],
+        name: other !== '' ? other : name,
+        desc,
       });
       return pV;
     }, []);
