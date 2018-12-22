@@ -99,13 +99,13 @@ class DmAddCharacter extends LitElement {
               <dm-card inner-card>
                 <div slot="content">
                   <vaadin-combo-box
-                    name="class"
+                    name="player_class"
                     label="Class"
                     .items="${this._classes}">
                   </vaadin-combo-box>
                   <paper-input 
                     label="Other" 
-                    name="customRace"
+                    name="customClass"
                     type="text"
                     value="">
                   </paper-input>
@@ -220,6 +220,8 @@ class DmAddCharacter extends LitElement {
               ${this._generateListBox('actions')}
               ${this._generateListBox('reactions')}
               ${this._generateListBox('legendary_actions')}
+              ${this._generateListBox('spells')}
+              ${this._generateListBox('equipment')}
             </form>
           </iron-form>
         </div>
@@ -245,6 +247,8 @@ class DmAddCharacter extends LitElement {
       reactions: { type: Array },
       legendary_actions: { type: Array },
       features: { type: Array },
+      spells: { type: Array },
+      equipment: { type: Array },
 
       _races: { type: Array },
       _traits: { type: Array },
@@ -253,6 +257,8 @@ class DmAddCharacter extends LitElement {
       _legendary_actions: { type: Array },
       _classes: { type: Array },
       _features: { type: Array },
+      _spells: { type: Array },
+      _equipment: { type: Array },
 
       _rawTraits: { type: Array },
       _rawFeatures: { type: Array },
@@ -269,6 +275,8 @@ class DmAddCharacter extends LitElement {
     this.reactions = [];
     this.legendary_actions = [];
     this.features = [];
+    this.spells = [];
+    this.equipment = [];
 
     // dropdown values
     this._races = [];
@@ -278,6 +286,8 @@ class DmAddCharacter extends LitElement {
     this._legendary_actions = [];
     this._classes = [];
     this._features = [];
+    this._spells = [];
+    this._equipment = [];
 
     // raw values for filtering
     this._rawTraits = [];
@@ -289,20 +299,27 @@ class DmAddCharacter extends LitElement {
       .then((races) => {
         this._races = this._generateDropdownList(races);
       });
+
     Services.traits.getAll()
       .then((traits) => {
         this._traits = this._generateDropdownList(traits);
         this._rawTraits = this._generateDropdownList(traits);
       });
+
     Services.classes.getAll()
       .then((classes) => {
         this._classes = this._generateDropdownList(classes);
       });
-    // Services.features.getAll()
-    //   .then((features) => {
-    //     this._features = this._generateDropdownList(features);
-    //     this._rawFeatures = this._generateDropdownList(features);
-    //   });
+
+    Services.spells.getAll()
+      .then((spells) => {
+        this._spells = this._generateDropdownList(spells);
+      });
+
+    Services.equipment.getAll()
+      .then((equipment) => {
+        this._equipment = this._generateDropdownList(equipment);
+      });
   }
 
   _onRaceChanged({ target: { value } }) {
@@ -322,8 +339,8 @@ class DmAddCharacter extends LitElement {
   _generateListBox(type) {
     function _onNameChanged({ target: { value } }) {
       if (value === '' || vm[`_${type}`].length === 0) return;
-      const { desc } = vm[`_${type}`].find(t => t.label === value);
-      [vm.shadowRoot.querySelector(`[id="${type}${this}"]`).value] = desc;
+      const { desc, equipment_category } = vm[`_${type}`].find(t => t.label === value);
+      vm.shadowRoot.querySelector(`[id="${type}${this}"]`).value = desc ? desc.join('\n') : equipment_category;
     }
 
     return html`
