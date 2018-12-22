@@ -6,6 +6,8 @@ import '@polymer/iron-form';
 import '@polymer/paper-button';
 import '@polymer/paper-input/paper-input';
 
+import './dm-card';
+
 class DmLoginView extends DmPageView {
   render() {
     return html` 
@@ -13,37 +15,58 @@ class DmLoginView extends DmPageView {
       <style>
         [button-container] {
           text-align:center;
-          padding-top: 2%;
         }
 
         paper-button {
           width: 15%;
         }
+
+        paper-button.create-account {
+          background-color: var(--app-primary-color);
+          color: var(--app-light-text-color);
+        }
       </style>
-      <iron-form 
-        id="login-form"
-        @iron-form-submit="${this._onFormSubmitted.bind(this)}">
-        <form login-form>
-          <paper-input 
-            label="Email" 
-            name="email"
-            error-message="Invalid email."
-            type="email"
-            auto-validate
-            required>
-          </paper-input>
-          <paper-input 
-            label="Password" 
-            type="password" 
-            name="password"
-            required>
-          </paper-input>
+      <dm-card showActions>
+        <div slot="header">Login In</div>
+        <div slot="content">
+          <iron-form 
+            id="login-form"
+            @iron-form-submit="${this._onFormSubmitted.bind(this)}">
+            <form login-form>
+              <paper-input 
+                label="Email" 
+                name="email"
+                error-message="Invalid email."
+                type="email"
+                auto-validate
+                required>
+              </paper-input>
+              <paper-input 
+                label="Password" 
+                type="password" 
+                name="password"
+                required>
+              </paper-input>
+            </form>
+          </iron-form>
+        </div>
+        <div slot="actions">
           <div button-container>
-            <paper-button raised @click="${this._onLogIn.bind(this)}">Login </paper-button>
-            <paper-button raised @click="${this._onSignUp.bind(this)}">Sign Up </paper-button>
+            <paper-button 
+              raised
+              @click="${this._onLogIn.bind(this)}">
+                Login
+            </paper-button>
+            <paper-button
+              class="create-account"
+              raised
+              @click="${this._onSignUp.bind(this)}">
+                Sign Up
+              </paper-button>
           </div>
-        </form>
-      </iron-form>
+        </div>
+      </dm-card>
+      
     `;
   }
 
