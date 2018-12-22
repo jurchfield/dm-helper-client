@@ -233,12 +233,18 @@ class DmAddCharacter extends LitElement {
       actions: { type: Array },
       reactions: { type: Array },
       legendary_actions: { type: Array },
+      features: { type: Array },
+
       _races: { type: Array },
       _traits: { type: Array },
       _actions: { type: Array },
       _reactions: { type: Array },
       _legendary_actions: { type: Array },
       _classes: { type: Array },
+      _features: { type: Array },
+
+      _rawTraits: { type: Array },
+      _rawFeatures: { type: Array },
     };
   }
 
@@ -251,6 +257,7 @@ class DmAddCharacter extends LitElement {
     this.actions = [];
     this.reactions = [];
     this.legendary_actions = [];
+    this.features = [];
 
     // dropdown values
     this._races = [];
@@ -259,22 +266,32 @@ class DmAddCharacter extends LitElement {
     this._reactions = [];
     this._legendary_actions = [];
     this._classes = [];
+    this._features = [];
+
+    // raw values for filtering
+    this._rawTraits = [];
+    this._rawFeatures = [];
   }
 
   firstUpdated() {
     Services.races.getAll()
       .then((races) => {
-        this._races = races.map(({ name }) => ({ label: name, value: name }));
+        this._races = this._generateDropdownList(races);
       });
     Services.traits.getAll()
       .then((traits) => {
-        this._traits = traits.map(({ name, ...rest }) => ({ label: name, value: name, ...rest }));
-        this._rawTraits = traits.map(({ name, ...rest }) => ({ label: name, value: name, ...rest }));
+        this._traits = this._generateDropdownList(traits);
+        this._rawTraits = this._generateDropdownList(traits);
       });
     Services.classes.getAll()
       .then((classes) => {
-        this._classes = classes.map(({ name, ...rest }) => ({ label: name, value: name, ...rest }));
+        this._classes = this._generateDropdownList(classes);
       });
+    // Services.features.getAll()
+    //   .then((features) => {
+    //     this._features = this._generateDropdownList(features);
+    //     this._rawFeatures = this._generateDropdownList(features);
+    //   });
   }
 
   _onRaceChanged({ target: { value } }) {
@@ -283,11 +300,18 @@ class DmAddCharacter extends LitElement {
     );
   }
 
+  _onClassChanged({ target: { value } }) {
+    this._features = this._rawFeatures.filter(f => f.class.name.includes(value));
+  }
+
+  _generateDropdownList(items) {
+    return items.map(({ name, ...rest }) => ({ label: name, value: name, ...rest }));
+  }
+
   _generateListBox(type) {
     function _onNameChanged({ target: { value } }) {
       if (value === '' || vm[`_${type}`].length === 0) return;
       const { desc } = vm[`_${type}`].find(t => t.label === value);
-      console.log(this);
       [vm.shadowRoot.querySelector(`[id="${type}${this}"]`).value] = desc;
     }
 
