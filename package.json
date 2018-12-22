@@ -8,6 +8,7 @@
   "repository": "jurchfield/dm-helper",
   "scripts": {
     "start": "polymer serve",
+    "start:static": "polymer serve --port 5000 build/es6-bundled",
     "build": "polymer build",
     "build:prpl-server": "polymer build --auto-base-path && gulp prpl-server",
     "serve:prpl-server": "prpl-server --root server/build",

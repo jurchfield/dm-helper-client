@@ -52,7 +52,7 @@ class DmEncountersView extends DmPageView {
       </style>
       <div id="container">
         <div id="add-characters">
-          <dm-card>
+          <dm-card showActions>
             <div slot="header">Add Participants</div>
             <div slot="content">
               <vaadin-combo-box 
@@ -167,8 +167,9 @@ class DmEncountersView extends DmPageView {
 
   _getAddCharacterView() {
     return html`
-      <dm-add-character>
-      
+      <dm-add-character 
+      @character-added="${this._characterAdded.bind(this)}"
+      @cancel="${this._addCharacterCancel.bind(this)}">
       </dm-add-character>
     `;
   }
@@ -186,6 +187,17 @@ class DmEncountersView extends DmPageView {
     if (value === 'add') {
       this._showCharacterAdd = true;
     }
+  }
+
+  _characterAdded({ detail }) {
+    this._participants = [...this._participants, new Participant(detail)];
+    this._players = [...this._players, { label: detail.name, value: detail }];
+    this._showCharacterAdd = false;
+    this.requestUpdate();
+  }
+
+  _addCharacterCancel() {
+    this._showCharacterAdd = false;
   }
 
   _updateParticipants({ detail: p }) {

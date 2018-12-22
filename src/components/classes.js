@@ -20,6 +20,54 @@ export function roll(die, amt, mod) {
   return (result + mod);
 }
 
+export class Player {
+  constructor({
+    traits,
+    actions,
+    reactions,
+    legendary_actions,
+    dexterity,
+    constitution,
+    strength,
+    charisma,
+    intelligence,
+    wisdom,
+    ...props
+  }) {
+    Object.assign(this,
+      {
+        type: 'Player',
+        special_abilities: this._createNameDescArray(traits),
+        actions: this._createNameDescArray(actions),
+        reactions: this._createNameDescArray(reactions),
+        legendary_actions: this._createNameDescArray(legendary_actions),
+        dexterity_modifier: Math.floor((dexterity - 10) / 2),
+        constitution_modifier: Math.floor((constitution - 10) / 2),
+        strength_modifier: Math.floor((strength - 10) / 2),
+        charisma_modifier: Math.floor((charisma - 10) / 2),
+        intelligence_modifier: Math.floor((intelligence - 10) / 2),
+        wisdom_modifier: Math.floor((wisdom - 10) / 2),
+        ...props,
+      });
+  }
+
+  _createNameDescArray(arr = []) {
+    const chunks = arr.reduce((all, one, i) => {
+      const ch = Math.floor(i / 3);
+      all[ch] = [].concat((all[ch] || []), one);
+      return all;
+    }, []);
+
+    return chunks.reduce((pV, [name, other, desc]) => {
+      pV.push({
+        name: other !== '' ? other : name,
+        desc,
+      });
+      return pV;
+    }, []);
+  }
+}
+
 export class Participant {
   constructor(p) {
     Object.assign(this, { ...p, id: _guidGenerator(), hit_points_max: p.hit_points });

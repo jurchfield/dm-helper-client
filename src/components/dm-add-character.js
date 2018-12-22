@@ -2,6 +2,7 @@ import { html, LitElement } from '@polymer/lit-element';
 
 import { SharedStyles } from './shared-styles';
 import { Services } from './services';
+import { Player } from './classes';
 
 import '@polymer/iron-form';
 import '@polymer/paper-button';
@@ -42,8 +43,13 @@ class DmAddCharacter extends LitElement {
           grid-gap: 2%;
           align-items: center;
         }
+
+        paper-button.create {
+          background-color: var(--app-primary-color);
+          color: var(--app-light-text-color);
+        }
       </style>
-      <dm-card>
+      <dm-card showActions>
         <div slot="header">Add New Character</div>
         <div slot="content">
           <iron-form
@@ -219,8 +225,13 @@ class DmAddCharacter extends LitElement {
         </div>
         <div slot="actions">
           <paper-button
+            class="create"
             @click="${this._onSubmit.bind(this)}">
             Create
+          </paper-button>
+          <paper-button
+            @click="${this._cancel.bind(this)}">
+            Cancel
           </paper-button>
         </div>
       </dm-card>
@@ -316,7 +327,7 @@ class DmAddCharacter extends LitElement {
     }
 
     return html`
-    <dm-card inner-card>
+    <dm-card inner-card showActions>
       <div slot="header">
         ${type}
       </div>
@@ -371,26 +382,15 @@ class DmAddCharacter extends LitElement {
   }
 
   _onFormSubmitted({ detail }) {
-    const {
-      traits,
-      actions,
-      reactions,
-      legendary_actions,
-      ...props
-    } = detail;
-
-    const character = {
-      type: 'Player',
-      special_abilities: this._createNameDescArray(traits),
-      actions: this._createNameDescArray(actions),
-      reactions: this._createNameDescArray(reactions),
-      legendary_actions: this._createNameDescArray(legendary_actions),
-      ...props,
-    };
+    const character = new Player(detail);
 
     console.log(character);
 
     this.dispatchEvent(new CustomEvent('character-added', { detail: character }));
+  }
+
+  _cancel() {
+    this.dispatchEvent(new CustomEvent('cancel'));
   }
 
   _addItem() {
@@ -401,22 +401,6 @@ class DmAddCharacter extends LitElement {
   _removeItem() {
     vm[this.type].splice(this.index, 1);
     vm.requestUpdate();
-  }
-
-  _createNameDescArray(arr = []) {
-    const chunks = arr.reduce((all, one, i) => {
-      const ch = Math.floor(i / 3);
-      all[ch] = [].concat((all[ch] || []), one);
-      return all;
-    }, []);
-
-    return chunks.reduce((pV, [name, other, desc]) => {
-      pV.push({
-        name: other !== '' ? other : name,
-        desc,
-      });
-      return pV;
-    }, []);
   }
 }
 

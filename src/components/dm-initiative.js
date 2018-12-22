@@ -101,7 +101,7 @@ class DmInitiative extends LitElement {
 
   _getParticipantCard(p) {
     return html`
-      <dm-card participant-card>
+      <dm-card participant-card showActions>
         <div
         slot="content"
         @click="${this._selectParticipant.bind(p)}">

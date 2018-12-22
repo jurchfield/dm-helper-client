@@ -34,7 +34,7 @@ class DmCard extends LitElement {
         }
 
         [actions] {
-          padding: 1.5% repeat(3, 3%);
+          padding: 1em;
           border-top: 1px solid #e8e8e8;
         }
       </style>
@@ -45,11 +45,18 @@ class DmCard extends LitElement {
         <div content>
           <slot name="content"></slot>
         </div>
+        ${this.showActions ? html`
         <div actions>
           <slot name="actions"></slot>
-        </div>
+        </div>` : ''}
       </paper-card>
     `;
+  }
+
+  static get properties() {
+    return {
+      showActions: { type: Boolean },
+    };
   }
 }
 
